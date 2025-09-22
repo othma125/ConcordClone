@@ -20,7 +20,7 @@ class InputData:
         self.use_matrix: bool = False
         self.explicit_weights: bool = False
         self._cost_matrix: Optional[List[List[Optional[float]]]] = None
-        self._cost_map: Optional[Dict[Tuple[int, int], float]] = None
+        self._cost_map: Optional[Dict[Edge, float]] = None
         self._closed = False
         self._lock = threading.RLock()
 
@@ -244,29 +244,29 @@ class InputData:
             if fmt == "FULL_MATRIX":
                 for i in range(n):
                     for j in range(n):
-                        self._cost_map[(i, j)] = nums[idx]
+                        self._cost_map[Edge(i, j)] = nums[idx]
                         idx += 1
             elif fmt == "UPPER_ROW":
                 for i in range(n):
                     for j in range(i + 1, n):
                         w = nums[idx]
                         idx += 1
-                        self._cost_map[(i, j)] = w
-                        self._cost_map[(j, i)] = w
+                        self._cost_map[Edge(i, j)] = w
+                        self._cost_map[Edge(j, i)] = w
             elif fmt == "LOWER_ROW":
                 for i in range(n):
                     for j in range(i):
                         w = nums[idx]
                         idx += 1
-                        self._cost_map[(i, j)] = w
-                        self._cost_map[(j, i)] = w
+                        self._cost_map[Edge(i, j)] = w
+                        self._cost_map[Edge(j, i)] = w
             elif fmt == "UPPER_DIAG_ROW":
                 for i in range(n):
                     for j in range(i, n):
                         w = nums[idx]
                         idx += 1
-                        self._cost_map[(i, j)] = w
-                        self._cost_map[(j, i)] = w
+                        self._cost_map[Edge(i, j)] = w
+                        self._cost_map[Edge(j, i)] = w
             elif fmt == "LOWER_DIAG_ROW":
                 for i in range(n):
                     for j in range(i + 1):
@@ -277,7 +277,7 @@ class InputData:
             else:
                 raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT: {fmt}")
             for i in range(n):
-                self._cost_map.setdefault((i, i), 0.0)
+                self._cost_map.setdefault(Edge(i, i), 0.0)
 
     def _expected_explicit_count(self, fmt: str) -> int:
         n = self.stops_count
@@ -303,24 +303,22 @@ class InputData:
         if x == y:
             return 0.0
         if self.use_matrix:
-            m = self._cost_matrix
-            assert m is not None
-            existing = m[x][y]
+            assert self._cost_matrix is not None
+            existing = self._cost_matrix[x][y]
             if self.explicit_weights:
                 if existing is None:
-                    raise RuntimeError(f"Missing explicit matrix value for {edge}")
+                    raise RuntimeError(f"Missing explicit matrix value for {Edge}")
                 return existing
             if existing is not None and existing > 0:
                 return existing
             return self._compute_and_store(x, y)
         else:
-            cm = self._cost_map
-            assert cm is not None
-            val = cm.get((x, y))
+            assert self._cost_map is not None
+            val = self._cost_map.get(Edge(x, y))
             if val is not None:
                 return val
             if self.explicit_weights:
-                raise RuntimeError(f"Missing explicit edge {edge}")
+                raise RuntimeError(f"Missing explicit edge {Edge}")
             return self._compute_and_store(x, y)
 
     def _compute_and_store(self, x: int, y: int) -> float:
