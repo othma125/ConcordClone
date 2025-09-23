@@ -22,12 +22,12 @@ class LeftShiftMove(LocalSearchMove):
 
         self._gain = 0.0
 
-        self._gain += data.getCost(self._sequence[self.j] if self._withTwoOpt else self._sequence[self.j + self._degree], self._sequence[self.i])
-        self._gain += data.getCost(self._sequence[x], self._sequence[self.j + self._degree] if self._withTwoOpt else self._sequence[self.j])
-        self._gain -= data.getCost(self._sequence[x], self._sequence[self.i])
-        self._gain -= data.getCost(self._sequence[self.j - 1], self._sequence[self.j])
-        self._gain -= data.getCost(self._sequence[self.j + self._degree], self._sequence[y])
-        self._gain += data.getCost(self._sequence[self.j - 1], self._sequence[y])
+        self._gain += data.get_cost(self._sequence[self.j] if self._withTwoOpt else self._sequence[self.j + self._degree], self._sequence[self.i])
+        self._gain += data.get_cost(self._sequence[x], self._sequence[self.j + self._degree] if self._withTwoOpt else self._sequence[self.j])
+        self._gain -= data.get_cost(self._sequence[x], self._sequence[self.i])
+        self._gain -= data.get_cost(self._sequence[self.j - 1], self._sequence[self.j])
+        self._gain -= data.get_cost(self._sequence[self.j + self._degree], self._sequence[y])
+        self._gain += data.get_cost(self._sequence[self.j - 1], self._sequence[y])
 
     def perform(self) -> None:
         if self._gain <= 0:

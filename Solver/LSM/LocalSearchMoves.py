@@ -20,7 +20,7 @@ class LocalSearchMove:
     def gain(self) -> float:
         return self._gain
     
-    def gain(self, data: InputData) -> float:
+    def get_gain(self, data: InputData) -> float:
         """Compute and return gain."""
         self.set_gain(data)
         return self._gain

@@ -2,7 +2,7 @@ import math
 import os
 import re
 import threading
-from typing import Dict, Tuple, List, Optional, TextIO
+from typing import Dict, List, Optional, TextIO
 import tracemalloc
 from .Edge import Edge
 from .Location import Location
@@ -24,14 +24,12 @@ class InputData:
         self._closed = False
         self._lock = threading.RLock()
 
-        need_allocate_after_parse = False
         with (open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
             early_exit = self._parse_tsplib(fh, max_dimension)
             if early_exit:
                 return
             if self.use_matrix and self.stops_count > 0:
                 self._allocate_matrix()
-                need_allocate_after_parse = True
             elif not self.use_matrix and self._cost_map is None:
                 self._cost_map = {}
 
@@ -156,7 +154,7 @@ class InputData:
             y = self._parse_float(parts[start + 1])
             if x is not None and y is not None:
                 self.coordinates.append(Location(x, y))
-                if self.stops_count > 0 and len(self.coordinates) >= self.stops_count:
+                if 0 < self.stops_count <= len(self.coordinates):
                     break
         if self.stops_count and len(self.coordinates) < self.stops_count:
             self.stops_count = len(self.coordinates)

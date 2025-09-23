@@ -21,9 +21,9 @@ class RightShiftMove(LocalSearchMove):
         y = 0 if self.j + 1 == n else self.j + 1
 
         self._gain = 0.0
-        self._gain += data.getCost(self._sequence[self.j], self._sequence[self.i] if self._withTwoOpt else self._sequence[self.i - self._degree])
-        self._gain += data.getCost(self._sequence[self.i - self._degree] if self._withTwoOpt else self._sequence[self.i], self._sequence[y])
-        self._gain -= data.getCost(self._sequence[self.j], self._sequence[y])
-        self._gain -= data.getCost(self._sequence[self.i], self._sequence[self.i + 1])
-        self._gain += data.getCost(self._sequence[x], self._sequence[self.i + 1])
-        self._gain -= data.getCost(self._sequence[x], self._sequence[self.i - self._degree])
+        self._gain += data.get_cost(self._sequence[self.j], self._sequence[self.i] if self._withTwoOpt else self._sequence[self.i - self._degree])
+        self._gain += data.get_cost(self._sequence[self.i - self._degree] if self._withTwoOpt else self._sequence[self.i], self._sequence[y])
+        self._gain -= data.get_cost(self._sequence[self.j], self._sequence[y])
+        self._gain -= data.get_cost(self._sequence[self.i], self._sequence[self.i + 1])
+        self._gain += data.get_cost(self._sequence[x], self._sequence[self.i + 1])
+        self._gain -= data.get_cost(self._sequence[x], self._sequence[self.i - self._degree])

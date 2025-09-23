@@ -36,7 +36,7 @@ class Location:
         xd = self.latitude - location.latitude
         yd = self.longitude - location.longitude
         rij = math.sqrt((xd * xd + yd * yd) / 10.0)
-        tij = math.round(rij)
+        tij = round(rij)
         return tij + (1 if tij < rij else 0)  # integer rounding per TSPLIB
 
     # Existing get_euclidean can remain or delegate (optional)

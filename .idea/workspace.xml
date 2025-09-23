@@ -5,131 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b83e00dc-998c-49d2-a818-3eb7b01a700a" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/ConcordClone.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/a280.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ali535.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/att48.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/att532.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/bayg29.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/bays29.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/berlin52.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/bier127.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/brazil58.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/brd14051.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/brg180.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/burma14.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ch130.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ch150.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d1291.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d15112.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d1655.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d18512.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d198.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d2103.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d493.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/d657.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/dantzig42.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/dsj1000.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/eil101.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/eil51.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/eil76.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fl1400.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fl1577.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fl3795.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fl417.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fnl4461.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/fri26.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gil262.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr120.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr137.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr17.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr202.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr21.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr229.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr24.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr431.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr48.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr666.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/gr96.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/hk48.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroA100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroA150.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroA200.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroB100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroB150.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroB200.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroC100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroD100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/kroE100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/lin105.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/lin318.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/linhp318.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/nrw1379.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/p654.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pa561.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pcb1173.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pcb3038.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pcb442.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pla33810.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pla7397.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pla85900.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr1002.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr107.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr124.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr136.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr144.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr152.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr226.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr2392.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr264.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr299.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr439.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/pr76.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rat195.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rat575.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rat783.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rat99.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rd100.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rd400.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl11849.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl1304.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl1323.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl1889.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl5915.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/rl5934.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/si1032.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/si175.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/si535.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/st70.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/swiss42.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ts225.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/tsp225.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u1060.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u1432.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u159.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u1817.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u2152.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u2319.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u574.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/u724.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ulysses16.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/ulysses22.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/usa13509.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/vm1084.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/vm1748.tsp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ALL_tsp/xray.problems" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Edge.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/InputData.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Location.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tsplib_best_known.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Edge.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Edge.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InputData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Location.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Location.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/LocalSearchMoves.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LocalSearchMoves.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/RightShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/RightShift.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/Swap..py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/Swap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/two_opt.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/Tour.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Tour.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,9 +25,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="333kVatSBb0J0xIxj5tdXwqhnSa" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -150,12 +36,59 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.Tour.executor": "Run",
+    "Python.main (1).executor": "Run",
     "Python.main.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main (1)">
+    <configuration name="Tour" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ConcordClone" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Solver" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Solver/Tour.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="ConcordClone" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ConcordClone" />
       <option name="ENV_FILES" value="" />
@@ -180,6 +113,8 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main (1)" />
+        <item itemvalue="Python.Tour" />
         <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
