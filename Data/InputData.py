@@ -240,7 +240,6 @@ class InputData:
             else:
                 raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT: {fmt}")
         else:
-            assert self._cost_map is not None
             if fmt == "FULL_MATRIX":
                 for i in range(n):
                     for j in range(n):
@@ -303,7 +302,6 @@ class InputData:
         if x == y:
             return 0.0
         if self.use_matrix:
-            assert self._cost_matrix is not None
             existing = self._cost_matrix[x][y]
             if self.explicit_weights:
                 if existing is None:
@@ -313,7 +311,6 @@ class InputData:
                 return existing
             return self._compute_and_store(x, y)
         else:
-            assert self._cost_map is not None
             val = self._cost_map.get(Edge(x, y))
             if val is not None:
                 return val
@@ -329,20 +326,21 @@ class InputData:
             if edge_weight_type == "CEIL_2D":
                 cost = math.ceil(loc1.get_euclidean(loc2))
             elif edge_weight_type.startswith("EUC"):
-                cost = int(math.ceil(loc1.get_euclidean(loc2)))
+                # cost = int(math.ceil(loc1.get_euclidean(loc2)))
+                cost = int(loc1.get_euclidean(loc2) + 0.5)
             elif edge_weight_type == "GEO":
                 cost = loc1.to_geo().get_geo_great_circle_distance(loc2.to_geo())
             elif edge_weight_type == "ATT":
                 cost = loc1.get_pseudo_euclidean_distance(loc2)
             else:
-                cost = int(loc1.get_euclidean(loc2) + 0.5)
+                cost = loc1.get_euclidean(loc2)
 
             if self.use_matrix:
                 self._cost_matrix[x][y] = cost
                 self._cost_matrix[y][x] = cost
             else:
-                self._cost_map[(x, y)] = cost
-                self._cost_map[(y, x)] = cost
+                self._cost_map[Edge(x, y)] = cost
+                self._cost_map[Edge(y, x)] = cost
             return cost
 
     # --------------- Utilities --------------- #

@@ -1,3 +1,6 @@
+from Data import InputData
+
+
 class Edge:
     ''' An edge is a pair of vertices (x, y) '''
     def __init__(self, x: int, y: int = None):
@@ -38,6 +41,10 @@ class Edge:
     def is_equals_to(self, edge: 'Edge') -> bool:
         ''' Check if two edges are equal '''
         return self.X == edge.X and self.Y == edge.Y
+    
+    def is_partially_equals_to(self, edge: 'Edge') -> bool:
+        ''' Check if two edges share a vertex '''
+        return self.X == edge.X or self.Y == edge.Y
 
     def __eq__(self, other: object) -> bool:
         ''' Check if two edges are equal '''
@@ -46,3 +53,17 @@ class Edge:
         if other is None or type(self) != type(other):
             return False
         return self.is_equals_to(other)
+    
+    def _2opt(self, data: InputData, edge: 'Edge', c: bool = True) -> bool:
+        ''' Check if two edges can be swapped using 2-opt move '''
+        if (self.Y == edge.X
+            or self.X == edge.Y
+            or self.is_partially_equals_to(edge)
+            or self.is_equals_to(edge)):
+            return False
+        gain: float = 0
+        gain -= data.get_cost(self)
+        gain -= data.get_cost(edge)
+        gain += data.get_cost(self.Y, edge.X)
+        gain += data.get_cost(self.X, edge.Y)
+        return gain < 0 or (c and edge._2opt(data, self, False))

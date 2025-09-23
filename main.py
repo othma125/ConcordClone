@@ -7,7 +7,8 @@ if __name__ == "__main__":
     project_root = os.path.dirname(os.path.abspath(__file__))
     tsp_dir = os.path.join(project_root, "ALL_tsp")
 
-    file_name = "burma14.tsp"  # change to desired file
+    # file_name = "burma14.tsp"  # change to desired file
+    file_name = "bier127.tsp"
     selected_file = os.path.join(tsp_dir, file_name)
     print(f"Loading: {selected_file}")
 
