@@ -8,7 +8,7 @@ from .Edge import Edge
 from .Location import Location
 
 
-class InputData:
+class input_data:
     DEFAULT_MATRIX_THRESHOLD = 150  # Always matrix below or equal
     MATRIX_ENV = "TSP_MATRIX_MAX"  # Override like export TSP_MATRIX_MAX=500
 

@@ -2,16 +2,16 @@ import math
 import random
 import numpy as np
 
-from Data.InputData import InputData
+from Data.InputData import input_data
 from Solver.LSM.LocalSearchMoves import LocalSearchMove
 from Solver.LSM.TwoOpt import TwoOptMove
 from Solver.LSM.LeftShift import LeftShiftMove
 from Solver.LSM.RightShift import RightShiftMove
 from Solver.LSM.Swap import SwapMove
-from Solver.Moves import Move  # rename file if needed (current file name is Swap.py)
+from Solver.Moves import move  # rename file if needed (current file name is Swap.py)
 
 
-class Tour:
+class tour:
     """
     Tour representation with local search using existing move classes:
       - TwoOptMove
@@ -20,45 +20,49 @@ class Tour:
     Improvement criterion: move.gain <= 0 (consistent with current move implementations).
     """
 
-    def __init__(self, data: InputData, sequence: np.ndarray = None) -> None:
+    def __init__(self, data: input_data, sequence: np.ndarray = None) -> None:
         """
         Initialize a Tour instance.
         """
         n = data.stops_count
+        improve: bool = False
         if sequence is None:
+            improve = True
             self._sequence = np.random.permutation(n).astype(int)
         else:
-            arr = np.fromiter(sequence, dtype=int)
-            if len(arr) != n:
+            if len(sequence) != n:
                 raise ValueError("Provided sequence length does not match data.stops_count")
-            self._sequence = arr.copy()
-
+            self._sequence = np.fromiter(sequence, dtype=int).copy()
         self._compute_cost(data)
-        self.local_search(data)
+        if improve:
+            self._local_search(data)
 
     # -------------------- Core utilities --------------------
 
-    def _compute_cost(self, data: InputData) -> None:
+    def _compute_cost(self, data: input_data) -> None:
         """Calculate total cost of the current sequence."""
         self._cost = 0.0
         i = 0
-        while i < len(self._sequence) - 1:
+        n = len(self._sequence)
+        while i < n - 1:
             self._cost += data.get_cost(int(self._sequence[i]), int(self._sequence[i + 1]))
             i += 1
         self._cost += data.get_cost(int(self._sequence[i]), int(self._sequence[0]))
-
-    def get_cost(self) -> float:
+    
+    @property
+    def cost(self) -> float:
         return self._cost
 
-    def get_sequence(self) -> np.ndarray:
+    @property
+    def sequence(self) -> np.ndarray:
         return self._sequence
 
     # -------------------- Local Search --------------------
 
-    def local_search(self, data: InputData) -> None:
+    def _local_search(self, data: input_data) -> None:
         """
         Iteratively apply 2_opt moves to improve the tour cost
-        Stops when no stagnation is reached, then stagnation breaker is applied.
+        Stops when no stagnation is reached, then stagnation breaker is applied with some probability
         """
         n = len(self._sequence)
         if n < 2:
@@ -74,44 +78,45 @@ class Tour:
                     lsm.perform()
                     self._cost += lsm.gain
         if improved:
-            move: Move = Move(0, n - 1)
-            random.randint(0, 10)
-            move.right_shift(self._sequence)
-            self.local_search(data)  # Recursive call until no improvement
-        elif random.random() < probability and self.stagnation_breaker(data):
-            self.local_search(data)  # Random perturbation to escape local minima
+            m = move(0, n - 1)
+            iterations = random.randint(0, 10)
+            for _ in range(iterations):
+                m.right_shift(self._sequence)
+            self._local_search(data)  # Recursive call until no improvement
+        elif random.random() < probability and self._stagnation_breaker(data):
+            self._local_search(data)  # Random perturbation to escape local minima
 
-    def stagnation_breaker(self, data: InputData) -> bool:
+    def _stagnation_breaker(self, data: input_data) -> bool:
         n = len(self._sequence)
         for i in range(0, n - 1):
             best_lsm = None
             for j in range(i + 1, n):
                 if j > i + 1:
                     lsm = SwapMove(self._sequence, i, j)
-                    if lsm.get_gain(data) < 0 and (best_lsm is None or lsm.get_gain(data) < best_lsm.gain):
+                    if lsm.get_gain(data) < 0 and (best_lsm is None or lsm < best_lsm):
                         best_lsm = lsm
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if j + degree >= n:
                         break
                     lsm1 = LeftShiftMove(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1.get_gain(data) < best_lsm.gain):
+                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
                         best_lsm = lsm1
                     if degree == 0:
                         continue
                     lsm2 = LeftShiftMove(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2.get_gain(data) < best_lsm.gain):
+                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
                         best_lsm = lsm2
 
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if i - degree < 0:
                         break
                     lsm1 = RightShiftMove(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1.get_gain(data) < best_lsm.gain):
+                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
                         best_lsm = lsm1
                     if degree == 0:
                         continue
                     lsm2 = RightShiftMove(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2.get_gain(data) < best_lsm.gain):
+                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
                         best_lsm = lsm2
             if best_lsm is not None:
                 best_lsm.perform()
@@ -119,19 +124,10 @@ class Tour:
         return False
 
     def __str__(self) -> str:
-        return f"cost = {self._cost:.2f} \nSequence = {self.pretty()}"
+        return f"cost = {self._cost:.2f} \nSequence = {self._pretty()}"
 
-    def pretty(self) -> str:
+    def _pretty(self) -> str:
         return " -> ".join(str(int(x) + 1) for x in self._sequence) + f" -> {1 + int(self._sequence[0])}"
-
-
-# Simple manual test (run directly)
-if __name__ == "__main__":
-    from Data.InputData import InputData
-    import os
-
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    tsp = os.path.join(root, "ALL_tsp", "bier127.tsp")
-    data = InputData(tsp)
-    tour = Tour(data)
-    print(tour)
+    
+    def __lt__(self, other: 'tour') -> bool:
+        return self._cost < other._cost

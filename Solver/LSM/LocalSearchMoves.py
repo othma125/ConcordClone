@@ -1,4 +1,4 @@
-from Data.InputData import InputData
+from Data.InputData import input_data
 import numpy as np
 
 class LocalSearchMove:
@@ -20,12 +20,15 @@ class LocalSearchMove:
     def gain(self) -> float:
         return self._gain
     
-    def get_gain(self, data: InputData) -> float:
+    def __lt__(self, other: 'LocalSearchMove') -> bool:
+        return self._gain < other._gain
+
+    def get_gain(self, data: input_data) -> float:
         """Compute and return gain."""
         self.set_gain(data)
         return self._gain
 
-    def set_gain(self, data: InputData) -> None:
+    def set_gain(self, data: input_data) -> None:
         """Override in subclasses."""
         pass
 

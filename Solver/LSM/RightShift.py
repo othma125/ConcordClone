@@ -1,5 +1,5 @@
-from Solver.Moves import Move
-from Data.InputData import InputData
+from Solver.Moves import move
+from Data.InputData import input_data
 from .LocalSearchMoves import LocalSearchMove
 
 class RightShiftMove(LocalSearchMove):
@@ -10,7 +10,7 @@ class RightShiftMove(LocalSearchMove):
         self._degree = degree
         self._withTwoOpt = withTwoOpt
 
-    def set_gain(self, data: InputData) -> None:
+    def set_gain(self, data: input_data) -> None:
         n = len(self._sequence)
         # Trivial case and gain computation
         if self.i - self._degree == self.j or (self.i - self._degree == 0 and self.j + 1 == n):
@@ -27,3 +27,8 @@ class RightShiftMove(LocalSearchMove):
         self._gain -= data.get_cost(self._sequence[self.i], self._sequence[self.i + 1])
         self._gain += data.get_cost(self._sequence[x], self._sequence[self.i + 1])
         self._gain -= data.get_cost(self._sequence[x], self._sequence[self.i - self._degree])
+
+    # def perform(self) -> None:
+    #     if self._gain < 0:
+    #         for k in range(self._degree + 1):
+    #             move(self.j - k, self.i - k if self._withTwoOpt else self.i - self._degree + k).right_shift(self._sequence)

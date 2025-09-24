@@ -5,16 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b83e00dc-998c-49d2-a818-3eb7b01a700a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Edge.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Edge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/InputData.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InputData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Location.py" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Location.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/LocalSearchMoves.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LocalSearchMoves.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/RightShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/RightShift.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/Swap..py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/Swap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/two_opt.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/Tour.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Tour.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

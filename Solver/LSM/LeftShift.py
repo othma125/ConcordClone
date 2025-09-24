@@ -1,5 +1,5 @@
-from Solver.Moves import Move
-from Data.InputData import InputData
+from Solver.Moves import move
+from Data.InputData import input_data
 from .LocalSearchMoves import LocalSearchMove
 
 class LeftShiftMove(LocalSearchMove):
@@ -10,7 +10,7 @@ class LeftShiftMove(LocalSearchMove):
         self._degree = degree
         self._withTwoOpt = withTwoOpt
 
-    def set_gain(self, data: InputData) -> None:
+    def set_gain(self, data: input_data) -> None:
         n = len(self._sequence)
         # Trivial case and gain computation
         if self.i == self.j + self._degree or (self.i == 0 and self.j + self._degree + 1 == n):
@@ -30,6 +30,6 @@ class LeftShiftMove(LocalSearchMove):
         self._gain += data.get_cost(self._sequence[self.j - 1], self._sequence[y])
 
     def perform(self) -> None:
-        if self._gain <= 0:
+        if self._gain < 0:
             for k in range(self._degree + 1):
-                Move(self.i if self._withTwoOpt else self.i + k, self.j + k).left_shift(self._sequence)
+                move(self.i if self._withTwoOpt else self.i + k, self.j + k).left_shift(self._sequence)

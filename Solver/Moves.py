@@ -2,7 +2,7 @@ import numpy as np
 from dataclasses import dataclass
 
 @dataclass(frozen=True)
-class Move:
+class move:
     index1: int
     index2: int
 
@@ -42,13 +42,13 @@ class Move:
 # Optional simple tests
 if __name__ == "__main__":
     a = np.array([0,1,2,3,4,5,6])
-    Move(1,5).right_shift(a)         # move 5 to index 1
+    move(1,5).right_shift(a)         # move 5 to index 1
     assert np.all(a == np.array([0,5,1,2,3,4,6]))
-    Move(1,5).left_shift(a) # undo previous move
+    move(1,5).left_shift(a) # undo previous move
     assert np.all(a == np.array([0,1,2,3,4,5,6]))
-    Move(2,4).swap(a)
+    move(2,4).swap(a)
     assert np.all(a == np.array([0,1,4,3,2,5,6]))
-    Move(2,5).two_opt(a)           # reverse indices 2..5
+    move(2,5).two_opt(a)           # reverse indices 2..5
     # segment [4,3,2,5] becomes [5,2,3,4]
     assert np.all(a == np.array([0,1,5,2,3,4,6]))
     print("OK")
