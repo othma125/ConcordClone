@@ -2,7 +2,8 @@ from Solver.Moves import move
 from Data.InputData import input_data
 from .LocalSearchMoves import LocalSearchMove
 
-class TwoOptMove(LocalSearchMove):
+
+class two_opt_move(LocalSearchMove):
     """2-opt move that reverses the segment between indices i and j inclusive."""
 
     def set_gain(self, data: input_data) -> None:
@@ -17,10 +18,11 @@ class TwoOptMove(LocalSearchMove):
         y = self.j + 1 if self.j + 1 < n else 0
 
         self._gain = 0.0
-        self._gain -= data.get_cost(self._sequence[x], self._sequence[self.i])
-        self._gain -= data.get_cost(self._sequence[self.j], self._sequence[y])
-        self._gain += data.get_cost(self._sequence[x], self._sequence[self.j])
-        self._gain += data.get_cost(self._sequence[self.i], self._sequence[y])
+        seq = self._sequence
+        self._gain -= data.get_cost(seq[x], seq[self.i])
+        self._gain -= data.get_cost(seq[self.j], seq[y])
+        self._gain += data.get_cost(seq[x], seq[self.j])
+        self._gain += data.get_cost(seq[self.i], seq[y])
 
     def perform(self) -> None:
         if self._gain < 0:

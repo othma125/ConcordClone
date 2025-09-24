@@ -5,7 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b83e00dc-998c-49d2-a818-3eb7b01a700a" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/RightShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/RightShift.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/Swap.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/Swap.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/Tour.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Tour.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,16 +29,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Tour.executor": "Run",
-    "Python.main (1).executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Tour.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main (1).executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.main (1)">
     <configuration name="Tour" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="ConcordClone" />

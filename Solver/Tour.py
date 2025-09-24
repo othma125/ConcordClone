@@ -4,10 +4,10 @@ import numpy as np
 
 from Data.InputData import input_data
 from Solver.LSM.LocalSearchMoves import LocalSearchMove
-from Solver.LSM.TwoOpt import TwoOptMove
-from Solver.LSM.LeftShift import LeftShiftMove
-from Solver.LSM.RightShift import RightShiftMove
-from Solver.LSM.Swap import SwapMove
+from Solver.LSM.TwoOpt import two_opt_move
+from Solver.LSM.LeftShift import left_shift_move
+from Solver.LSM.RightShift import right_shift_move
+from Solver.LSM.Swap import swap_move
 from Solver.Moves import move  # rename file if needed (current file name is Swap.py)
 
 
@@ -72,7 +72,7 @@ class tour:
         for i in range(n - 1):
             for j in range(i + 1, n):
                 # Evaluate all move types
-                lsm: LocalSearchMove = TwoOptMove(self._sequence, i, j)
+                lsm: LocalSearchMove = two_opt_move(self._sequence, i, j)
                 if lsm.get_gain(data) < 0:
                     improved = True
                     lsm.perform()
@@ -92,30 +92,30 @@ class tour:
             best_lsm = None
             for j in range(i + 1, n):
                 if j > i + 1:
-                    lsm = SwapMove(self._sequence, i, j)
+                    lsm = swap_move(self._sequence, i, j)
                     if lsm.get_gain(data) < 0 and (best_lsm is None or lsm < best_lsm):
                         best_lsm = lsm
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if j + degree >= n:
                         break
-                    lsm1 = LeftShiftMove(self._sequence, i, j, degree)
+                    lsm1 = left_shift_move(self._sequence, i, j, degree)
                     if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
                         best_lsm = lsm1
                     if degree == 0:
                         continue
-                    lsm2 = LeftShiftMove(self._sequence, i, j, degree, False)
+                    lsm2 = left_shift_move(self._sequence, i, j, degree, False)
                     if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
                         best_lsm = lsm2
 
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if i - degree < 0:
                         break
-                    lsm1 = RightShiftMove(self._sequence, i, j, degree)
+                    lsm1 = right_shift_move(self._sequence, i, j, degree)
                     if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
                         best_lsm = lsm1
                     if degree == 0:
                         continue
-                    lsm2 = RightShiftMove(self._sequence, i, j, degree, False)
+                    lsm2 = right_shift_move(self._sequence, i, j, degree, False)
                     if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
                         best_lsm = lsm2
             if best_lsm is not None:
