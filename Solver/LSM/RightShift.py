@@ -23,8 +23,8 @@ class right_shift_move(LocalSearchMove):
 
         self._gain = 0.0
         seq = self._sequence
-        self._gain += data.get_cost(seq[self.j if self._withTwoOpt else self.j + self._degree], seq[self.i])
-        self._gain += data.get_cost(seq[x], seq[self.j + self._degree if self._withTwoOpt else self.j])
+        self._gain += data.get_cost(seq[self.j] if self._withTwoOpt else seq[self.j + self._degree], seq[self.i])
+        self._gain += data.get_cost(seq[x], seq[self.j + self._degree] if self._withTwoOpt else seq[self.j])
         self._gain -= data.get_cost(seq[x], seq[self.i])
         self._gain -= data.get_cost(seq[self.j - 1], seq[self.j])
         self._gain -= data.get_cost(seq[self.j + self._degree], seq[y])

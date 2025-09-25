@@ -1,5 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from random import random
 
 import numpy as np
 from pathlib import Path
@@ -7,8 +6,8 @@ from Data.InputData import input_data
 from Solver.Tour import tour
 from Solver.Moves import move
 from time import time
+from Solver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
 
-# (Multiprocessing helpers removed – using threads now.)
 
 class Solver:
     def __init__(self, file_name: str):
@@ -23,12 +22,17 @@ class Solver:
     def Solve(self, **kwargs) -> tour:
         method = kwargs.get("method", "chained_LK")
         if method == "nearest_neighbor":
-            return self._nearest_neighbor()
+            if "max_time" in kwargs:
+                max_time = kwargs.get("max_time")
+                return self._chained_LK(max_time)
+            else:
+                return self._nearest_neighbor()
         elif method == "chained_LK":
-            max_time = kwargs.get("max_time", float("inf"))
-            return self._chained_LK(max_time)
-        else:
-            raise ValueError(f"Unknown method: {method}")
+            if "max_time" in kwargs:
+                max_time = kwargs.get("max_time")
+                return self._chained_LK(max_time)
+            else:
+                return self._chained_LK()
 
     def _nearest_neighbor(self, max_time: float = float("inf")) -> tour:
         start_time = time()
@@ -66,8 +70,6 @@ class Solver:
             denominator = max(1e-9, current_time - start_ms)
             probability = numerator / denominator
             return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
-
-        from Solver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
 
         def generate_candidate_snapshot(best: 'tour'):
             # Use current data directly (safe in threads); create perturbation or random

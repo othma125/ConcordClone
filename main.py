@@ -1,6 +1,8 @@
 from Solver.Solver import Solver
 
 if __name__ == "__main__":
+    import sys
+    print(sys.version)
     file_name = "bier127.tsp"
     # file_name = "burma14.tsp"
 
