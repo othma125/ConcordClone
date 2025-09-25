@@ -144,8 +144,15 @@ class tour:
         ])
         return tour(data, new_seq, True)
 
+    def set_reach_time(self, time: float) -> None:
+        self._reach_time = time
+
+    @property
+    def reach_time(self) -> float:
+        return self._reach_time
+    
     def __str__(self) -> str:
-        return f"cost = {self._cost:.2f} \nSequence = {self._pretty()}"
+        return f"cost = {self._cost:.2f} \nreach time = {int(self._reach_time * 1000):.2f} ms\nSequence = {self._pretty()}"
 
     def _pretty(self) -> str:
         return " -> ".join(str(int(x) + 1) for x in self._sequence) + f" -> {1 + int(self._sequence[0])}"

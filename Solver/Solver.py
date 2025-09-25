@@ -1,4 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import as_completed
 
 import numpy as np
 from pathlib import Path
@@ -24,7 +24,7 @@ class Solver:
         if method == "nearest_neighbor":
             if "max_time" in kwargs:
                 max_time = kwargs.get("max_time")
-                return self._chained_LK(max_time)
+                return self._nearest_neighbor(max_time)
             else:
                 return self._nearest_neighbor()
         elif method == "chained_LK":
@@ -49,7 +49,10 @@ class Solver:
                 if self._data.get_cost(x, sequence[j]) < self._data.get_cost(x, sequence[i]):
                     # Swap
                     move(i, j).swap(sequence)
-        return tour(self._data, sequence)
+        new_tour = tour(self._data, sequence)
+        new_tour.set_reach_time(time() - start_time)
+        print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
+        return new_tour
 
     def _chained_LK(self, max_time: float = float("inf")) -> tour:
         if max_time <= 0:
@@ -71,7 +74,7 @@ class Solver:
             probability = numerator / denominator
             return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
 
-        def generate_candidate_snapshot(best: 'tour'):
+        def generate_candidate_snapshot(best: 'tour') -> 'tour':
             # Use current data directly (safe in threads); create perturbation or random
             return best.perturbation(self._data) if np.random.random() < 0.3 else tour(self._data)
 
@@ -81,7 +84,7 @@ class Solver:
                 candidate = fut.result()
                 if candidate.cost < best_tour.cost:
                     best_tour = candidate
-                    best_tour_time = time()
-                    print(f"New best cost = {best_tour.cost:.2f} at {int((best_tour_time - start_time) * 1000)} ms")
+                    best_tour.set_reach_time(time() - start_time)
+                    print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
 
         return best_tour

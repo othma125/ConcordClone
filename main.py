@@ -7,7 +7,8 @@ if __name__ == "__main__":
     # file_name = "burma14.tsp"
 
     solver = Solver(file_name)
-    features = {'method' : "chained_LK"
+    features = {
+                'method' : "chained_LK"
                 # 'method' : "nearest_neighbor"
                 , 'max_time' : 30} # seconds
     route = solver.Solve(**features)  
