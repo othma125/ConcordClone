@@ -31,6 +31,14 @@ class left_shift_move(LocalSearchMove):
 
     def perform(self) -> None:
         if self._gain < 0:
+            n = len(self._sequence)
+            # Base start index for the block being moved leftwards
             for k in range(self._degree + 1):
-                m = move(self.i - k, self.j if self._withTwoOpt else self.j - k)
-                m.left_shift(self._sequence)
+                src = self.i - k
+                dst = self.j if self._withTwoOpt else self.j - k
+                # Validate indices
+                if src < 0 or dst < 0 or src >= n or dst >= n:
+                    continue  # skip invalid
+                if src >= dst:  # left_shift expects src < dst
+                    continue
+                move(src, dst).left_shift(self._sequence)

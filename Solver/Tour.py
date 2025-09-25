@@ -1,5 +1,4 @@
 import math
-import random
 import numpy as np
 
 from Data.InputData import input_data
@@ -20,12 +19,11 @@ class tour:
     Improvement criterion: move.gain <= 0 (consistent with current move implementations).
     """
 
-    def __init__(self, data: input_data, sequence: np.ndarray = None) -> None:
+    def __init__(self, data: input_data, sequence: np.ndarray = None, improve: bool = False) -> None:
         """
         Initialize a Tour instance.
         """
         n = data.stops_count
-        improve: bool = False
         if sequence is None:
             improve = True
             self._sequence = np.random.permutation(n).astype(int)
@@ -78,15 +76,16 @@ class tour:
                     lsm.perform()
                     self._cost += lsm.gain
         if improved:
-            m = move(0, n - 1)
-            iterations = random.randint(0, 10)
-            for _ in range(iterations):
-                m.right_shift(self._sequence)
+            # m = move(0, n - 1)
+            # iterations = np.random.randint(0, 10)
+            # for _ in range(iterations):
+            #     m.right_shift(self._sequence)
             self._local_search(data)  # Recursive call until no improvement
-        elif random.random() < probability and self._stagnation_breaker(data):
+        elif np.random.random() < probability and self._stagnation_breaker(data):
             self._local_search(data)  # Random perturbation to escape local minima
 
     def _stagnation_breaker(self, data: input_data) -> bool:
+        ''' Try to find any improving move to escape stagnation.'''
         n = len(self._sequence)
         for i in range(0, n - 1):
             best_lsm = None
@@ -95,33 +94,55 @@ class tour:
                     lsm = swap_move(self._sequence, i, j)
                     if lsm.get_gain(data) < 0 and (best_lsm is None or lsm < best_lsm):
                         best_lsm = lsm
-                for degree in range(1 if j == i + 1 else 0, 3):
-                    if j + degree >= n:
-                        break
-                    lsm1 = left_shift_move(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
-                        best_lsm = lsm1
-                    if degree == 0:
-                        continue
-                    lsm2 = left_shift_move(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
-                        best_lsm = lsm2
+                # for degree in range(1 if j == i + 1 else 0, 3):
+                #     if j + degree >= n:
+                #         break
+                #     lsm1 = left_shift_move(self._sequence, i, j, degree)
+                #     if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
+                #         best_lsm = lsm1
+                #     if degree == 0:
+                #         continue
+                #     lsm2 = left_shift_move(self._sequence, i, j, degree, False)
+                #     if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
+                #         best_lsm = lsm2
 
-                for degree in range(1 if j == i + 1 else 0, 3):
-                    if i - degree < 0:
-                        break
-                    lsm1 = right_shift_move(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
-                        best_lsm = lsm1
-                    if degree == 0:
-                        continue
-                    lsm2 = right_shift_move(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
-                        best_lsm = lsm2
+                # for degree in range(1 if j == i + 1 else 0, 3):
+                #     if i - degree < 0:
+                #         break
+                #     lsm1 = right_shift_move(self._sequence, i, j, degree)
+                #     if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
+                #         best_lsm = lsm1
+                #     if degree == 0:
+                #         continue
+                #     lsm2 = right_shift_move(self._sequence, i, j, degree, False)
+                #     if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
+                #         best_lsm = lsm2
             if best_lsm is not None:
                 best_lsm.perform()
                 return True
         return False
+
+    def perturbation(self, data: input_data) -> 'tour':
+        """ two bridge-like perturbation to escape local minima """
+        n = len(self._sequence)
+        if n < 8:
+            return self
+        quarter = max(1, n // 4)
+
+        i = 1 + np.random.randint(0, quarter - 1)
+        j = i + 1 + np.random.randint(0, quarter - 1)
+        k = j + 1 + np.random.randint(0, quarter - 1)
+
+        k = min(k, n)
+        j = min(j, k - 1)
+
+        new_seq = np.concatenate([
+            self._sequence[:i],
+            self._sequence[j:k],
+            self._sequence[i:j],
+            self._sequence[k:]
+        ])
+        return tour(data, new_seq, True)
 
     def __str__(self) -> str:
         return f"cost = {self._cost:.2f} \nSequence = {self._pretty()}"

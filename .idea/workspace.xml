@@ -8,9 +8,11 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/LeftShift.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Solver/LSM/RightShift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/RightShift.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/Swap.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/Swap.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/LSM/TwoOpt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/Moves.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Moves.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/Solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Solver.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Solver/Tour.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/Tour.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Solver/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/Solver/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
