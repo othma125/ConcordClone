@@ -4,23 +4,24 @@ import re
 import threading
 from typing import Dict, List, Optional, TextIO
 import tracemalloc
-from .Edge import Edge
+import numpy as np
 from .Location import Location
+from .Edge import Edge
 
 
 class input_data:
-    DEFAULT_MATRIX_THRESHOLD = 150  # Always matrix below or equal
-    MATRIX_ENV = "TSP_MATRIX_MAX"  # Override like export TSP_MATRIX_MAX=500
+    DEFAULT_MATRIX_THRESHOLD = 150
+    MATRIX_ENV = "TSP_MATRIX_MAX"
 
     def __init__(self, path: str, max_dimension: int = float('inf')):
-        self.file_name = path if isinstance(path, str) else getattr(path, "name", "UNKNOWN")
-        self.header: Dict[str, str] = {}
-        self.coordinates: List[Location] = []
+        self._file_name = path if isinstance(path, str) else getattr(path, "name", "UNKNOWN")
+        self._header: Dict[str, str] = {}
+        self._coordinates: List[Location] = []  # type: ignore
         self.stops_count: int = 0
         self.use_matrix: bool = False
         self.explicit_weights: bool = False
-        self._cost_matrix: Optional[List[List[Optional[float]]]] = None
-        self._cost_map: Optional[Dict[Edge, float]] = None
+        self._cost_matrix: Optional[np.ndarray] = None  # CHANGED
+        self._cost_map: Optional[Dict[Edge, float]] = None  # type: ignore
         self._closed = False
         self._lock = threading.RLock()
 
@@ -30,14 +31,9 @@ class input_data:
                 return
             if self.use_matrix and self.stops_count > 0:
                 self._allocate_matrix()
-            elif not self.use_matrix and self._cost_map is None:
-                self._cost_map = {}
 
-        # For coordinate-based + matrix strategy we lazily fill; matrix already allocated
         if not self.use_matrix and self._cost_map is None:
             self._cost_map = {}
-
-    # --------------- Parsing --------------- #
 
     def _parse_tsplib(self, fh: TextIO, max_dimension: int) -> bool:
         section = None
@@ -62,14 +58,14 @@ class input_data:
             else:
                 if ":" in line:
                     k, v = line.split(":", 1)
-                    self.header[k.strip().upper()] = v.strip()
+                    self._header[k.strip().upper()] = v.strip()
                 else:
                     parts = line.split(None, 1)
                     if len(parts) == 2:
-                        self.header[parts[0].strip().upper()] = parts[1].strip()
+                        self._header[parts[0].strip().upper()] = parts[1].strip()
 
-        if "DIMENSION" in self.header:
-            dim_str = re.sub(r"[^0-9]", "", self.header["DIMENSION"])
+        if "DIMENSION" in self._header:
+            dim_str = re.sub(r"[^0-9]", "", self._header["DIMENSION"])
             if dim_str:
                 self.stops_count = int(dim_str)
             if self.stops_count > max_dimension:
@@ -78,8 +74,8 @@ class input_data:
         if self.stops_count > 0:
             self.use_matrix = self._decide_matrix_strategy()
 
-        edge_weight_type = self.header.get("EDGE_WEIGHT_TYPE", "").upper()
-        edge_weight_format = self.header.get("EDGE_WEIGHT_FORMAT", "").upper()
+        edge_weight_type = self._header.get("EDGE_WEIGHT_TYPE", "").upper()
+        edge_weight_format = self._header.get("EDGE_WEIGHT_FORMAT", "").upper()
 
         if edge_weight_type == "EXPLICIT" or section == "EDGE_WEIGHT_SECTION":
             self.explicit_weights = True
@@ -93,12 +89,6 @@ class input_data:
             self._read_node_coords(fh)
 
         return False
-
-    def _allocate_matrix(self):
-        if self._cost_matrix is not None:
-            return
-        # Use None sentinel for not yet computed (except diagonal implicitly zero)
-        self._cost_matrix = [[None for _ in range(self.stops_count)] for _ in range(self.stops_count)]
 
     # Decide between dense matrix or map
     def _decide_matrix_strategy(self) -> bool:
@@ -133,7 +123,7 @@ class input_data:
     # --------------- Coordinate & Explicit Parsing --------------- #
 
     def _read_node_coords(self, fh: TextIO):
-        self.coordinates.clear()
+        self._coordinates.clear()
         for raw in fh:
             t = raw.strip()
             if not t:
@@ -153,11 +143,64 @@ class input_data:
             x = self._parse_float(parts[start])
             y = self._parse_float(parts[start + 1])
             if x is not None and y is not None:
-                self.coordinates.append(Location(x, y))
-                if 0 < self.stops_count <= len(self.coordinates):
+                self._coordinates.append(Location(x, y))
+                if 0 < self.stops_count <= len(self._coordinates):
                     break
-        if self.stops_count and len(self.coordinates) < self.stops_count:
-            self.stops_count = len(self.coordinates)
+        if self.stops_count and len(self._coordinates) < self.stops_count:
+            self.stops_count = len(self._coordinates)
+
+    def _allocate_matrix(self):
+        if self._cost_matrix is not None:
+            return
+        # Use np.nan for not yet computed (except diagonal implicitly zero)
+        self._cost_matrix = np.full((self.stops_count, self.stops_count), np.nan, dtype=float)
+
+    def get_cost(self, x: int, y: int) -> float:
+        self._ensure_open()
+        if x < 0 or y < 0 or x >= self.stops_count or y >= self.stops_count:
+            raise IndexError("Invalid node index")
+        if x == y:
+            return 0.0
+        if self.use_matrix:
+            existing = self._cost_matrix[x, y]
+            if self.explicit_weights:
+                if np.isnan(existing):
+                    raise RuntimeError(f"Missing explicit matrix value for {Edge}")
+                return existing
+            if not np.isnan(existing) and existing > 0:
+                return existing
+            return self._compute_and_store(x, y)
+        else:
+            val = self._cost_map.get(Edge(x, y))
+            if val is not None:
+                return val
+            if self.explicit_weights:
+                raise RuntimeError(f"Missing explicit edge {Edge}")
+            return self._compute_and_store(x, y)
+
+    def _compute_and_store(self, x: int, y: int) -> float:
+        with self._lock:
+            loc1 = self._coordinates[x]
+            loc2 = self._coordinates[y]
+            edge_weight_type = self._header.get("EDGE_WEIGHT_TYPE", "").upper()
+            if edge_weight_type == "CEIL_2D":
+                cost = math.ceil(loc1.get_euclidean(loc2))
+            elif edge_weight_type.startswith("EUC"):
+                cost = int(loc1.get_euclidean(loc2) + 0.5)
+            elif edge_weight_type == "GEO":
+                cost = loc1.to_geo().get_geo_great_circle_distance(loc2.to_geo())
+            elif edge_weight_type == "ATT":
+                cost = loc1.get_pseudo_euclidean_distance(loc2)
+            else:
+                cost = loc1.get_euclidean(loc2)
+
+            if self.use_matrix:
+                self._cost_matrix[x, y] = cost
+                self._cost_matrix[y, x] = cost
+            else:
+                self._cost_map[Edge(x, y)] = cost
+                self._cost_map[Edge(y, x)] = cost
+            return cost
 
     def _read_explicit_weights(self, fh: TextIO, fmt: str):
         if self.stops_count <= 0:
@@ -185,17 +228,6 @@ class input_data:
         expected = self._expected_explicit_count(fmt)
         n = self.stops_count
         if len(nums) != expected:
-            if len(nums) == n * (n + 1) // 2:
-                fmt = "LOWER_DIAG_ROW" if "LOWER" in fmt else "UPPER_DIAG_ROW"
-                expected = len(nums)
-            elif len(nums) == n * (n - 1) // 2:
-                fmt = "LOWER_ROW" if "LOWER" in fmt else "UPPER_ROW"
-                expected = len(nums)
-            elif len(nums) == n * n:
-                fmt = "FULL_MATRIX"
-                expected = len(nums)
-
-        if len(nums) != expected:
             raise ValueError(f"Mismatch weight count. Expected {expected} ({fmt}), found {len(nums)}")
 
         idx = 0
@@ -205,36 +237,36 @@ class input_data:
             if fmt == "FULL_MATRIX":
                 for i in range(n):
                     for j in range(n):
-                        self._cost_matrix[i][j] = nums[idx]
+                        self._cost_matrix[i, j] = nums[idx]
                         idx += 1
             elif fmt == "UPPER_ROW":
                 for i in range(n):
                     for j in range(i + 1, n):
                         w = nums[idx]
                         idx += 1
-                        self._cost_matrix[i][j] = w
-                        self._cost_matrix[j][i] = w
+                        self._cost_matrix[i, j] = w
+                        self._cost_matrix[j, i] = w
             elif fmt == "LOWER_ROW":
                 for i in range(n):
                     for j in range(i):
                         w = nums[idx]
                         idx += 1
-                        self._cost_matrix[i][j] = w
-                        self._cost_matrix[j][i] = w
+                        self._cost_matrix[i, j] = w
+                        self._cost_matrix[j, i] = w
             elif fmt == "UPPER_DIAG_ROW":
                 for i in range(n):
                     for j in range(i, n):
                         w = nums[idx]
                         idx += 1
-                        self._cost_matrix[i][j] = w
-                        self._cost_matrix[j][i] = w
+                        self._cost_matrix[i, j] = w
+                        self._cost_matrix[j, i] = w
             elif fmt == "LOWER_DIAG_ROW":
                 for i in range(n):
                     for j in range(i + 1):
                         w = nums[idx]
                         idx += 1
-                        self._cost_matrix[i][j] = w
-                        self._cost_matrix[j][i] = w
+                        self._cost_matrix[i, j] = w
+                        self._cost_matrix[j, i] = w
             else:
                 raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT: {fmt}")
         else:
@@ -269,77 +301,12 @@ class input_data:
                     for j in range(i + 1):
                         w = nums[idx]
                         idx += 1
-                        self._cost_map[(i, j)] = w
-                        self._cost_map[(j, i)] = w
+                        self._cost_map[Edge(i, j)] = w
+                        self._cost_map[Edge(j, i)] = w
             else:
                 raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT: {fmt}")
             for i in range(n):
                 self._cost_map.setdefault(Edge(i, i), 0.0)
-
-    def _expected_explicit_count(self, fmt: str) -> int:
-        n = self.stops_count
-        if fmt == "FULL_MATRIX":
-            return n * n
-        if fmt in ("UPPER_ROW", "LOWER_ROW"):
-            return n * (n - 1) // 2
-        if fmt in ("UPPER_DIAG_ROW", "LOWER_DIAG_ROW"):
-            return n * (n + 1) // 2
-        raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT: {fmt}")
-
-    # --------------- Cost Retrieval --------------- #
-
-    def get_cost(self, edge: Edge) -> float:
-        if type(edge) is not Edge:
-            raise TypeError("Expected Edge instance")
-        return self.get_cost(edge.X, edge.Y)
-
-    def get_cost(self, x: int, y: int) -> float:
-        self._ensure_open()
-        if x < 0 or y < 0 or x >= self.stops_count or y >= self.stops_count:
-            raise IndexError("Invalid node index")
-        if x == y:
-            return 0.0
-        if self.use_matrix:
-            existing = self._cost_matrix[x][y]
-            if self.explicit_weights:
-                if existing is None:
-                    raise RuntimeError(f"Missing explicit matrix value for {Edge}")
-                return existing
-            if existing is not None and existing > 0:
-                return existing
-            return self._compute_and_store(x, y)
-        else:
-            val = self._cost_map.get(Edge(x, y))
-            if val is not None:
-                return val
-            if self.explicit_weights:
-                raise RuntimeError(f"Missing explicit edge {Edge}")
-            return self._compute_and_store(x, y)
-
-    def _compute_and_store(self, x: int, y: int) -> float:
-        with self._lock:
-            loc1 = self.coordinates[x]
-            loc2 = self.coordinates[y]
-            edge_weight_type = self.header.get("EDGE_WEIGHT_TYPE", "").upper()
-            if edge_weight_type == "CEIL_2D":
-                cost = math.ceil(loc1.get_euclidean(loc2))
-            elif edge_weight_type.startswith("EUC"):
-                # cost = int(math.ceil(loc1.get_euclidean(loc2)))
-                cost = int(loc1.get_euclidean(loc2) + 0.5)
-            elif edge_weight_type == "GEO":
-                cost = loc1.to_geo().get_geo_great_circle_distance(loc2.to_geo())
-            elif edge_weight_type == "ATT":
-                cost = loc1.get_pseudo_euclidean_distance(loc2)
-            else:
-                cost = loc1.get_euclidean(loc2)
-
-            if self.use_matrix:
-                self._cost_matrix[x][y] = cost
-                self._cost_matrix[y][x] = cost
-            else:
-                self._cost_map[Edge(x, y)] = cost
-                self._cost_map[Edge(y, x)] = cost
-            return cost
 
     # --------------- Utilities --------------- #
 
@@ -358,38 +325,17 @@ class input_data:
         except ValueError:
             return False
 
-    # --------------- Lifecycle --------------- #
-
-    def close(self):
+    def __del__(self) -> None:
         if self._closed:
             return
         self._closed = True
         if self._cost_map is not None:
             self._cost_map.clear()
         if self._cost_matrix is not None:
-            self._cost_matrix = None
-        self.coordinates.clear()
-        self.header.clear()
+            self._cost_matrix = None  # np.ndarray, just dereference
+        self._coordinates.clear()
+        self._header.clear()
 
     def _ensure_open(self):
         if self._closed:
-            raise RuntimeError(f"InputData instance already closed: {self.file_name}")
-
-    def __enter__(self):
-        self._ensure_open()
-        return self
-
-    def __exit__(self, exc_type, exc, tb):
-        self.close()
-
-    def __str__(self):
-        return f"InputData(file='{self.file_name}', stops={self.stops_count})"
-
-    # --------------- Comparable-like --------------- #
-
-    def __lt__(self, other: "InputData"):
-        return self.stops_count < other.stops_count
-
-    def __repr__(self):
-        strat = "MATRIX" if self.use_matrix else "MAP"
-        return f"InputData(file='{self.file_name}', stops={self.stops_count}, strategy={strat}, explicit={self.explicit_weights})"
+            raise RuntimeError(f"InputData instance already closed: {self._file_name}")

@@ -76,10 +76,10 @@ class tour:
                     lsm.perform()
                     self._cost += lsm.gain
         if improved:
-            # m = move(0, n - 1)
-            # iterations = np.random.randint(0, 10)
-            # for _ in range(iterations):
-            #     m.right_shift(self._sequence)
+            m = move(0, n - 1)
+            iterations = np.random.randint(0, 10)
+            for _ in range(iterations):
+                m.right_shift(self._sequence)
             self._local_search(data)  # Recursive call until no improvement
         elif np.random.random() < probability and self._stagnation_breaker(data):
             self._local_search(data)  # Random perturbation to escape local minima
@@ -125,8 +125,8 @@ class tour:
     def perturbation(self, data: input_data) -> 'tour':
         """ two bridge-like perturbation to escape local minima """
         n = len(self._sequence)
-        if n < 8:
-            return self
+        if n < 8 or np.random.random() < 0.3:
+            return tour(data)  # Random new tour
         quarter = max(1, n // 4)
 
         i = 1 + np.random.randint(0, quarter - 1)
@@ -152,10 +152,13 @@ class tour:
         return self._reach_time
     
     def __str__(self) -> str:
-        return f"cost = {self._cost:.2f} \nreach time = {int(self._reach_time * 1000):.2f} ms\nSequence = {self._pretty()}"
+        return f"cost = {self._cost:.2f} \nreach time = {int(self._reach_time * 1000)} ms\nSequence = {self._pretty()}"
 
     def _pretty(self) -> str:
         return " -> ".join(str(int(x) + 1) for x in self._sequence) + f" -> {1 + int(self._sequence[0])}"
     
     def __lt__(self, other: 'tour') -> bool:
         return self._cost < other._cost
+    
+    def __del__(self) -> None:
+        del self._sequence

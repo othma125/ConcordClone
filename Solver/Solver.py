@@ -74,12 +74,8 @@ class Solver:
             probability = numerator / denominator
             return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
 
-        def generate_candidate_snapshot(best: 'tour') -> 'tour':
-            # Use current data directly (safe in threads); create perturbation or random
-            return best.perturbation(self._data) if np.random.random() < 0.3 else tour(self._data)
-
         while non_stop_condition(stagnation_allowed_time, start_time, best_tour_time):
-            batch = [EXECUTOR.submit(generate_candidate_snapshot, best_tour) for _ in range(AVAILABLE_PROCESSOR_CORES)]
+            batch = [EXECUTOR.submit(best_tour.perturbation, self._data) for _ in range(AVAILABLE_PROCESSOR_CORES)]
             for fut in as_completed(batch):
                 candidate = fut.result()
                 if candidate.cost < best_tour.cost:
