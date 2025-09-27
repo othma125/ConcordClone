@@ -75,6 +75,7 @@ class tour:
                     improved = True
                     lsm.perform()
                     self._cost += lsm.gain
+                    break
         if improved:
             m = move(0, n - 1)
             iterations = np.random.randint(0, 10)
@@ -85,41 +86,42 @@ class tour:
             self._local_search(data)  # Random perturbation to escape local minima
 
     def _stagnation_breaker(self, data: input_data) -> bool:
-        ''' Try to find any improving move to escape stagnation.'''
+        """ Try to find any improving move to escape stagnation."""
         n = len(self._sequence)
         for i in range(0, n - 1):
-            best_lsm = None
             for j in range(i + 1, n):
                 if j > i + 1:
                     lsm = swap_move(self._sequence, i, j)
-                    if lsm.get_gain(data) < 0 and (best_lsm is None or lsm < best_lsm):
-                        best_lsm = lsm
+                    if lsm.get_gain(data) < 0:
+                        lsm.perform()
+                        return True
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if i - degree < 0:
                         break
                     lsm1 = left_shift_move(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
-                        best_lsm = lsm1
+                    if lsm1.get_gain(data) < 0:
+                        lsm1.perform()
+                        return True
                     if degree == 0:
                         continue
                     lsm2 = left_shift_move(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
-                        best_lsm = lsm2
+                    if lsm2.get_gain(data) < 0:
+                        lsm2.perform()
+                        return True
 
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if j + degree >= n:
                         break
                     lsm1 = right_shift_move(self._sequence, i, j, degree)
-                    if lsm1.get_gain(data) < 0 and (best_lsm is None or lsm1 < best_lsm):
-                        best_lsm = lsm1
+                    if lsm1.get_gain(data) < 0:
+                        lsm1.perform()
+                        return True
                     if degree == 0:
                         continue
                     lsm2 = right_shift_move(self._sequence, i, j, degree, False)
-                    if lsm2.get_gain(data) < 0 and (best_lsm is None or lsm2 < best_lsm):
-                        best_lsm = lsm2
-            if best_lsm is not None:
-                best_lsm.perform()
-                return True
+                    if lsm2.get_gain(data) < 0:
+                        lsm2.perform()
+                        return True
         return False
 
     def perturbation(self, data: input_data) -> 'tour':
@@ -145,14 +147,16 @@ class tour:
         return tour(data, new_seq, True)
 
     def set_reach_time(self, time: float) -> None:
-        self._reach_time = time
+        setattr(self, '_reach_time', time)
 
     @property
     def reach_time(self) -> float:
-        return self._reach_time
+        if hasattr(self, '_reach_time'):
+            return self._reach_time
+        raise ValueError("no attribute defined with this name")
     
     def __str__(self) -> str:
-        return f"cost = {self._cost:.2f} \nreach time = {int(self._reach_time * 1000)} ms\nSequence = {self._pretty()}"
+        return f"cost = {self._cost:.2f} \nreach time = {int(self.reach_time * 1000)} ms\nSequence = {self._pretty()}"
 
     def _pretty(self) -> str:
         return " -> ".join(str(int(x) + 1) for x in self._sequence) + f" -> {1 + int(self._sequence[0])}"

@@ -1,4 +1,5 @@
 from concurrent.futures import as_completed
+from zipfile import compressor_names
 
 import numpy as np
 from pathlib import Path
@@ -82,5 +83,7 @@ class Solver:
                     best_tour = candidate
                     best_tour.set_reach_time(time() - start_time)
                     print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
+                else:
+                    del candidate
 
         return best_tour

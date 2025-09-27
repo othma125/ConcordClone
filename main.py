@@ -8,6 +8,6 @@ if __name__ == "__main__":
     features = {
                 'method' : "chained_LK"
                 # 'method' : "nearest_neighbor"
-                , 'max_time' : 10} # seconds
+                , 'max_time' : 30} # seconds
     route = solver.Solve(**features)  
     print(route)
