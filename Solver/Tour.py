@@ -2,7 +2,6 @@ import math
 import numpy as np
 
 from Data.InputData import input_data
-from Solver.LSM.LocalSearchMoves import LocalSearchMove
 from Solver.LSM.TwoOpt import two_opt_move
 from Solver.LSM.LeftShift import left_shift_move
 from Solver.LSM.RightShift import right_shift_move
@@ -25,7 +24,7 @@ class tour:
         """
         n = data.stops_count
         if sequence is None:
-            improve = True
+            improve = True  # Always improve if random
             self._sequence = np.random.permutation(n).astype(int)
         else:
             if len(sequence) != n:
@@ -70,7 +69,7 @@ class tour:
         for i in range(n - 1):
             for j in range(i + 1, n):
                 # Evaluate all move types
-                lsm: LocalSearchMove = two_opt_move(self._sequence, i, j)
+                lsm = two_opt_move(self._sequence, i, j)
                 if lsm.get_gain(data) < 0:
                     improved = True
                     lsm.perform()
@@ -98,7 +97,7 @@ class tour:
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if i - degree < 0:
                         break
-                    lsm1 = left_shift_move(self._sequence, i, j, degree)
+                    lsm1 = left_shift_move(self._sequence, i, j, degree, True)
                     if lsm1.get_gain(data) < 0:
                         lsm1.perform()
                         return True
@@ -112,7 +111,7 @@ class tour:
                 for degree in range(1 if j == i + 1 else 0, 3):
                     if j + degree >= n:
                         break
-                    lsm1 = right_shift_move(self._sequence, i, j, degree)
+                    lsm1 = right_shift_move(self._sequence, i, j, degree, True)
                     if lsm1.get_gain(data) < 0:
                         lsm1.perform()
                         return True

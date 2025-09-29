@@ -34,6 +34,11 @@ class input_data:
 
         if not self.use_matrix and self._cost_map is None:
             self._cost_map = {}
+    @property
+    def matrix(self) -> Optional[np.ndarray]:
+        if not self.use_matrix:
+            return None
+        return self._cost_matrix
 
     def _parse_tsplib(self, fh: TextIO, max_dimension: int) -> bool:
         section = None
@@ -73,6 +78,8 @@ class input_data:
 
         if self.stops_count > 0:
             self.use_matrix = self._decide_matrix_strategy()
+        else:
+            raise ValueError("DIMENSION is required in TSPLIB file")
 
         edge_weight_type = self._header.get("EDGE_WEIGHT_TYPE", "").upper()
         edge_weight_format = self._header.get("EDGE_WEIGHT_FORMAT", "").upper()
@@ -186,7 +193,7 @@ class input_data:
             if edge_weight_type == "CEIL_2D":
                 cost = math.ceil(loc1.get_euclidean(loc2))
             elif edge_weight_type.startswith("EUC"):
-                cost = int(loc1.get_euclidean(loc2) + 0.5)
+                cost = round(loc1.get_euclidean(loc2))
             elif edge_weight_type == "GEO":
                 cost = loc1.to_geo().get_geo_great_circle_distance(loc2.to_geo())
             elif edge_weight_type == "ATT":
