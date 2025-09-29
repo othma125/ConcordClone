@@ -25,6 +25,8 @@ class Solver:
                 return self._nearest_neighbor(max_time)
             else:
                 return self._nearest_neighbor()
+        elif method == "christofides":
+            return self._christofides()
         elif method == "chained_LK":
             if "max_time" in kwargs:
                 max_time = kwargs.get("max_time")
@@ -39,6 +41,7 @@ class Solver:
                 return self._concord_wrapper()
 
     def _nearest_neighbor(self, max_time: float = float("inf")) -> tour:
+        """ Nearest Neighbor heuristic for TSP """
         if max_time <= 0:
             raise ValueError("max_time must be positive or infinity")
         from Solver.Moves import move
@@ -61,7 +64,28 @@ class Solver:
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
 
+    def _christofides(self) -> tour:
+        """ Christofides heuristic for TSP using NetworkX """
+        import networkx as nx
+        from networkx.algorithms.approximation import christofides
+        start_time = time()
+        print(f"File = {self._file_name}")
+        print(f"Stops Count = {self._data.stops_count}")
+        print("Solution approach = Christofides")
+        n = self._data.stops_count
+        G = nx.Graph()
+        for i in range(n):
+            for j in range(i + 1, n):
+                G.add_edge(i, j, weight=self._data.get_cost(i, j))
+        cycle = christofides(G)
+        sequence = np.array(cycle, dtype=int)[:n]
+        new_tour = tour(self._data, sequence)
+        new_tour.set_reach_time(time() - start_time)
+        print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
+        return new_tour
+
     def _chained_LK(self, max_time: float = float("inf")) -> tour:
+        """ Chained Lin-Kernighan heuristic for TSP """
         if max_time <= 0:
             raise ValueError("max_time must be positive or infinity")
         from Solver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
@@ -87,12 +111,9 @@ class Solver:
             for fut in as_completed(batch):
                 candidate = fut.result()
                 if candidate.cost < best_tour.cost:
-                    del best_tour
                     best_tour = candidate
                     best_tour.set_reach_time(time() - start_time)
                     print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
-                else:
-                    del candidate
 
         return best_tour
 
@@ -122,6 +143,6 @@ class Solver:
         new_tour.set_reach_time(time() - start_time)
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
-    
+
     def __del__(self) -> None:
         del self._data

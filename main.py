@@ -6,9 +6,10 @@ if __name__ == "__main__":
 
     solver = Solver(file_name)
     features = {
-                'method' : "chained_LK"
+                # 'method' : "chained_LK"
                 # 'method' : "concord_wrapper"
                 # 'method' : "nearest_neighbor"
+                'method' : "christofides"
                 , 'max_time' : 30} # seconds
     route = solver.Solve(**features)  
     print(route)

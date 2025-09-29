@@ -28,6 +28,8 @@ class tour:
             self._sequence = np.random.permutation(n).astype(int)
         else:
             if len(sequence) != n:
+                print(n)
+                print(len(sequence))
                 raise ValueError("Provided sequence length does not match data.stops_count")
             self._sequence = np.fromiter(sequence, dtype=int).copy()
         self._compute_cost(data)
@@ -163,5 +165,5 @@ class tour:
     def __lt__(self, other: 'tour') -> bool:
         return self._cost < other._cost
     
-    def __del__(self) -> None:
-        del self._sequence
+    # def __del__(self) -> None:
+    #     del self._sequence
