@@ -27,6 +27,12 @@ class Solver:
                 return self._nearest_neighbor()
         elif method == "christofides":
             return self._christofides()
+        elif method == "Simulated_Annealing":
+            if "max_time" in kwargs:
+                max_time = kwargs.get("max_time")
+                return self._Simulated_Annealing(max_time)
+            else:
+                return self._Simulated_Annealing()
         elif method == "chained_LK":
             if "max_time" in kwargs:
                 max_time = kwargs.get("max_time")
@@ -120,7 +126,7 @@ class Solver:
     def _concord_wrapper(self, max_time: float = float("inf"), heuristic: bool = True) -> tour:
         if max_time <= 0:
             raise ValueError("max_time must be positive or infinity")
-        from concorde.tsp import TSPSolver as concord
+        from pytsp.tsp import TSPSolver as concord
         start_time = time()
         n = self._data.stops_count
         if n > 10000:
@@ -130,14 +136,14 @@ class Solver:
         print("Solution approach = Concord TSP Solver")
 
         if self._data.matrix is not None:
-            solver = TSPSolver.from_data(
+            solver = concord.from_data(
                 n, self._data.matrix, norm="EXPLICIT", sym=True, heuristic=heuristic
             )
         else:
             repo_root = Path(__file__).resolve().parent.parent
             tsp_dir = repo_root / "ALL_tsp"
             selected_file = tsp_dir / self._file_name
-            solver = TSPSolver.from_tspfile(selected_file, heuristic=heuristic)
+            solver = concord.from_tspfile(selected_file, heuristic=heuristic)
         solution = solver.solve()
         new_tour = tour(self._data, np.array(solution.tour, dtype=int))
         new_tour.set_reach_time(time() - start_time)
