@@ -11,15 +11,17 @@ def calculate_gap(file_name: str, route: tour) -> DataFrame:
     best_known_row = df[df['Instance'] == instance_name]
     if best_known_row.empty:
         raise ValueError(f"No best known solution found for instance: {instance_name}")
-    best_known = best_known_row['BestKnownValue'].values[0]
-    current_cost = route.cost
-    gap = (current_cost - best_known) / best_known if best_known != 0 else 0
-    # Create a DataFrame to return the results
-    result = {'file_name': [file_name],
-              'best_known': [best_known],
-              'current_cost': [current_cost],
-              'gap': [f"{gap:.2%}"]}
-    return pd.DataFrame(result)
+    best_known_value = best_known_row['BestKnownValue'].values[0]
+    best_known_time = best_known_row['RunningTime'].values[0]
+    gap = (float(route.cost) - best_known_value) / best_known_value if best_known_value != 0 else 0
+    # Create a dictionary as result
+    result = {'file_name': file_name,
+              'best_known_value': float(best_known_value),
+              'best_known_time(s)': best_known_time,
+              'current_value': float(route.cost),
+              'current_time(s)': route.reach_time,
+              'gap': f"{gap:.2%}"}
+    return result
 
 
 if __name__ == "__main__":
@@ -28,11 +30,12 @@ if __name__ == "__main__":
 
     solver = TSPSolver(file_name)
     features = {
-        # 'method' : "christofides"
+        'method' : "christofides"
         # 'method' : "nearest_neighbor"
-        'method': "chained_LK"
+        # 'method': "chained_LK"
         # 'method' : "concord_wrapper"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)
-    print(calculate_gap(file_name, route))
+    from pprint import pprint
+    pprint(calculate_gap(file_name, route))
