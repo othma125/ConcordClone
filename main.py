@@ -1,5 +1,5 @@
 from TSPSolver.TSPSolver import TSPSolver
-from TSPSolver.Tour import tour
+from TSPSolver.TSPTour import tour
 from pandas import DataFrame
 
 

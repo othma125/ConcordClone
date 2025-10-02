@@ -3,7 +3,7 @@ from concurrent.futures import as_completed
 import numpy as np
 from pathlib import Path
 from TSPData.TSPInstance import TSPInstance
-from TSPSolver.Tour import tour
+from TSPSolver.TSPTour import tour
 from time import time
 
 
