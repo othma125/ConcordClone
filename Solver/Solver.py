@@ -27,12 +27,12 @@ class Solver:
                 return self._nearest_neighbor()
         elif method == "christofides":
             return self._christofides()
-        elif method == "Simulated_Annealing":
-            if "max_time" in kwargs:
-                max_time = kwargs.get("max_time")
-                return self._Simulated_Annealing(max_time)
-            else:
-                return self._Simulated_Annealing()
+        # elif method == "Simulated_Annealing":
+        #     if "max_time" in kwargs:
+        #         max_time = kwargs.get("max_time")
+        #         return self._Simulated_Annealing(max_time)
+        #     else:
+        #         return self._Simulated_Annealing()
         elif method == "chained_LK":
             if "max_time" in kwargs:
                 max_time = kwargs.get("max_time")
@@ -100,7 +100,8 @@ class Solver:
         print(f"Stops Count = {self._data.stops_count}")
         print("Solution approach = Chained Lin-Kernighan")
         best_tour = tour(self._data)
-        best_tour_time = start_time
+        best_tour_time = time()
+        best_tour.set_reach_time(best_tour_time - start_time)
         stagnation_allowed_time = int(max(100, 100 * np.log(self._data.stops_count)))  # ms
 
         def non_stop_condition(stag_ms: int, start_ms: float, best_ms: float) -> bool:
@@ -118,7 +119,8 @@ class Solver:
                 candidate = fut.result()
                 if candidate.cost < best_tour.cost:
                     best_tour = candidate
-                    best_tour.set_reach_time(time() - start_time)
+                    best_tour_time = time()
+                    best_tour.set_reach_time(best_tour_time - start_time)
                     print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
 
         return best_tour
