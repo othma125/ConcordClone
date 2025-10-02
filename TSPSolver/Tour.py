@@ -1,12 +1,12 @@
 import math
 import numpy as np
 
-from Data.InputData import input_data
-from Solver.LSM.TwoOpt import two_opt_move
-from Solver.LSM.LeftShift import left_shift_move
-from Solver.LSM.RightShift import right_shift_move
-from Solver.LSM.Swap import swap_move
-from Solver.Moves import move  # rename file if needed (current file name is Swap.py)
+from TSPData.TSPInstance import TSPInstance
+from TSPSolver.LSM.TwoOpt import two_opt_move
+from TSPSolver.LSM.LeftShift import left_shift_move
+from TSPSolver.LSM.RightShift import right_shift_move
+from TSPSolver.LSM.Swap import swap_move
+from TSPSolver.Moves import move  # rename file if needed (current file name is Swap.py)
 
 
 class tour:
@@ -18,7 +18,7 @@ class tour:
     Improvement criterion: move.gain <= 0 (consistent with current move implementations).
     """
 
-    def __init__(self, data: input_data, sequence: np.ndarray = None, improve: bool = False) -> None:
+    def __init__(self, data: TSPInstance, sequence: np.ndarray = None, improve: bool = False) -> None:
         """
         Initialize a Tour instance.
         """
@@ -38,7 +38,7 @@ class tour:
 
     # -------------------- Core utilities --------------------
 
-    def _compute_cost(self, data: input_data) -> None:
+    def _compute_cost(self, data: TSPInstance) -> None:
         """Calculate total cost of the current sequence."""
         self._cost = 0.0
         i = 0
@@ -58,7 +58,7 @@ class tour:
 
     # -------------------- Local Search --------------------
 
-    def _local_search(self, data: input_data) -> None:
+    def _local_search(self, data: TSPInstance) -> None:
         """
         Iteratively apply 2_opt moves to improve the tour cost
         Stops when no stagnation is reached, then stagnation breaker is applied with some probability
@@ -86,7 +86,7 @@ class tour:
         elif np.random.random() < probability and self._stagnation_breaker(data):
             self._local_search(data)  # Random perturbation to escape local minima
 
-    def _stagnation_breaker(self, data: input_data) -> bool:
+    def _stagnation_breaker(self, data: TSPInstance) -> bool:
         """ Try to find any improving move to escape stagnation."""
         n = len(self._sequence)
         for i in range(0, n - 1):
@@ -125,7 +125,7 @@ class tour:
                         return True
         return False
 
-    def perturbation(self, data: input_data) -> 'tour':
+    def perturbation(self, data: TSPInstance) -> 'tour':
         """ two bridge-like perturbation to escape local minima """
         n = len(self._sequence)
         if n < 8 or np.random.random() < 0.3:

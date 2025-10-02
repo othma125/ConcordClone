@@ -1,12 +1,12 @@
-from Solver.Moves import move
-from Data.InputData import input_data
+from TSPSolver.Moves import move
+from TSPData.TSPInstance import TSPInstance
 from .LocalSearchMoves import LocalSearchMove
 
 
 class two_opt_move(LocalSearchMove):
     """2-opt move that reverses the segment between indices i and j inclusive."""
 
-    def set_gain(self, data: input_data) -> None:
+    def set_gain(self, data: TSPInstance) -> None:
         n = len(self._sequence)
         # Full tour reversal (no change) or trivial
         if self.i >= self.j or (self.i == 0 and self.j == n - 1):

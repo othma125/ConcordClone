@@ -1,4 +1,4 @@
-from Data import InputData
+from TSPData import TSPInstance
 
 
 class Edge:
@@ -55,7 +55,7 @@ class Edge:
             return False
         return self.is_equals_to(other)
 
-    def _2opt(self, data: InputData, edge: 'Edge', c: bool = True) -> bool:
+    def _2opt(self, data: TSPInstance, edge: 'Edge', c: bool = True) -> bool:
         ''' Check if two edges can be swapped using 2-opt move '''
         if (self.Y == edge.X
                 or self.X == edge.Y

@@ -1,5 +1,5 @@
-from Solver.Moves import move
-from Data.InputData import input_data
+from TSPSolver.Moves import move
+from TSPData.TSPInstance import TSPInstance
 from .LocalSearchMoves import LocalSearchMove
 
 
@@ -11,7 +11,7 @@ class left_shift_move(LocalSearchMove):
         self._degree = degree
         self._withTwoOpt = withTwoOpt
 
-    def set_gain(self, data: input_data) -> None:
+    def set_gain(self, data: TSPInstance) -> None:
         n = len(self._sequence)
         # Trivial case and gain computation
         if self.i - self._degree == self.j or (self.i - self._degree == 0 and self.j + 1 == n):

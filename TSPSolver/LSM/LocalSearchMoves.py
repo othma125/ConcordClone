@@ -1,4 +1,4 @@
-from Data.InputData import input_data
+from TSPData.TSPInstance import TSPInstance
 import numpy as np
 
 class LocalSearchMove:
@@ -23,12 +23,12 @@ class LocalSearchMove:
     def __lt__(self, other: 'LocalSearchMove') -> bool:
         return self._gain < other._gain
 
-    def get_gain(self, data: input_data) -> float:
+    def get_gain(self, data: TSPInstance) -> float:
         """Compute and return gain."""
         self.set_gain(data)
         return self._gain
 
-    def set_gain(self, data: input_data) -> None:
+    def set_gain(self, data: TSPInstance) -> None:
         """Override in subclasses."""
         pass
 

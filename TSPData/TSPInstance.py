@@ -9,7 +9,7 @@ from .Location import Location
 from .Edge import Edge
 
 
-class input_data:
+class TSPInstance:
     DEFAULT_MATRIX_THRESHOLD = 150
     MATRIX_ENV = "TSP_MATRIX_MAX"
 

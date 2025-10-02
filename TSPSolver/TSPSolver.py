@@ -2,20 +2,20 @@ from concurrent.futures import as_completed
 
 import numpy as np
 from pathlib import Path
-from Data.InputData import input_data
-from Solver.Tour import tour
+from TSPData.TSPInstance import TSPInstance
+from TSPSolver.Tour import tour
 from time import time
 
 
-class Solver:
+class TSPSolver:
     def __init__(self, file_name: str):
         self._file_name = file_name
         repo_root = Path(__file__).resolve().parent.parent
-        tsp_dir = repo_root / "ALL_tsp"
+        tsp_dir = repo_root / "TSPLIB"
         selected_file = tsp_dir / file_name
         if not selected_file.is_file():
             raise FileNotFoundError(f"TSP file not found: {selected_file}")
-        self._data = input_data(str(selected_file))
+        self._data = TSPInstance(str(selected_file))
 
     def Solve(self, **kwargs) -> tour:
         method = kwargs.get("method", "chained_LK")
@@ -50,7 +50,7 @@ class Solver:
         """ Nearest Neighbor heuristic for TSP """
         if max_time <= 0:
             raise ValueError("max_time must be positive or infinity")
-        from Solver.Moves import move
+        from TSPSolver.Moves import move
         start_time = time()
         print(f"File = {self._file_name}")
         print(f"Stops Count = {self._data.stops_count}")
@@ -94,7 +94,7 @@ class Solver:
         """ Chained Lin-Kernighan heuristic for TSP """
         if max_time <= 0:
             raise ValueError("max_time must be positive or infinity")
-        from Solver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
+        from TSPSolver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
         start_time = time()
         print(f"File = {self._file_name}")
         print(f"Stops Count = {self._data.stops_count}")
@@ -135,7 +135,7 @@ class Solver:
             raise ValueError("Concorde wrapper supports up to 10,000 stops due to memory constraints.")
         print(f"File = {self._file_name}")
         print(f"Stops Count = {n}")
-        print("Solution approach = Concord TSP Solver")
+        print("Solution approach = Concord TSP TSPSolver")
 
         if self._data.matrix is not None:
             solver = concord.from_data(
@@ -143,7 +143,7 @@ class Solver:
             )
         else:
             repo_root = Path(__file__).resolve().parent.parent
-            tsp_dir = repo_root / "ALL_tsp"
+            tsp_dir = repo_root / "TSPLIB"
             selected_file = tsp_dir / self._file_name
             solver = concord.from_tspfile(selected_file, heuristic=heuristic)
         solution = solver.solve()

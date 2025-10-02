@@ -1,12 +1,12 @@
-from Solver.Moves import move
-from Data.InputData import input_data
+from TSPSolver.Moves import move
+from TSPData.TSPInstance import TSPInstance
 from .LocalSearchMoves import LocalSearchMove
 
 
 class swap_move(LocalSearchMove):
     """Swap move that exchanges the elements at indices i and j."""
 
-    def set_gain(self, data: input_data) -> None:
+    def set_gain(self, data: TSPInstance) -> None:
         n = len(self._sequence)
         # Trivial case
         if self.i == self.j or (self.i == 0 and self.j + 1 == n):
