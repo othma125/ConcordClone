@@ -9,7 +9,7 @@ from TSPSolver.LSM.Swap import swap_move
 from TSPSolver.Moves import move  # rename file if needed (current file name is Swap.py)
 
 
-class tour:
+class TSPTour:
     """
     Tour representation with local search using existing move classes:
       - TwoOptMove
@@ -125,11 +125,11 @@ class tour:
                         return True
         return False
 
-    def perturbation(self, data: TSPInstance) -> 'tour':
+    def perturbation(self, data: TSPInstance) -> 'TSPTour':
         """ two bridge-like perturbation to escape local minima """
         n = len(self._sequence)
         if n < 8 or np.random.random() < 0.3:
-            return tour(data)  # Random new tour
+            return TSPTour(data)  # Random new tour
         quarter = max(1, n // 4)
 
         i = 1 + np.random.randint(0, quarter - 1)
@@ -145,7 +145,7 @@ class tour:
             self._sequence[i:j],
             self._sequence[k:]
         ])
-        return tour(data, new_seq, True)
+        return TSPTour(data, new_seq, True)
 
     def set_reach_time(self, time: float) -> None:
         setattr(self, '_reach_time', time)
@@ -162,7 +162,7 @@ class tour:
     def _pretty(self) -> str:
         return " -> ".join(str(int(x) + 1) for x in self._sequence) + f" -> {1 + int(self._sequence[0])}"
     
-    def __lt__(self, other: 'tour') -> bool:
+    def __lt__(self, other: 'TSPTour') -> bool:
         return self._cost < other._cost
     
     # def __del__(self) -> None:

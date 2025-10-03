@@ -1,12 +1,13 @@
 from TSPSolver.TSPSolver import TSPSolver
-from TSPSolver.TSPTour import tour
-from pandas import DataFrame
+from TSPSolver.TSPTour import TSPTour
+import pandas as pd
+
+df = pd.read_csv("TSPLIB//best_known_values.csv")
 
 
-def calculate_gap(file_name: str, route: tour) -> DataFrame:
-    import pandas as pd
-    df = pd.read_csv("TSPLIB//best_known_values.csv")
-    # Calculate the gap between the best known solution and the current solution
+def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFrame:
+    """Calculate the gap between the best known solution and the current solution"""
+    
     instance_name = file_name.split('.')[0]
     best_known_row = df[df['Instance'] == instance_name]
     if best_known_row.empty:
@@ -19,7 +20,7 @@ def calculate_gap(file_name: str, route: tour) -> DataFrame:
               'best_known_value': float(best_known_value),
               'best_known_time(s)': best_known_time,
               'current_value': float(route.cost),
-              'current_time(s)': route.reach_time,
+              'current_time(s)': round(route.reach_time, 2),
               'gap': f"{gap:.2%}"}
     return result
 
@@ -30,12 +31,13 @@ if __name__ == "__main__":
 
     solver = TSPSolver(file_name)
     features = {
-        'method' : "christofides"
+        # 'method' : "christofides"
         # 'method' : "nearest_neighbor"
         # 'method': "chained_LK"
+        'method' : "pyvrp_hgs"
         # 'method' : "concord_wrapper"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)
     from pprint import pprint
-    pprint(calculate_gap(file_name, route))
+    pprint(calculate_gap(file_name, route, df))
