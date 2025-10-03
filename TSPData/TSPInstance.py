@@ -39,6 +39,12 @@ class TSPInstance:
         if not self.use_matrix:
             return None
         return self._cost_matrix
+    
+    @property
+    def coordinates(self) -> List[Location]:
+        if hasattr(self, '_coordinates'):
+            return self._coordinates
+        raise ValueError("no attribute defined with this name")
 
     def _parse_tsplib(self, fh: TextIO, max_dimension: int) -> bool:
         section = None

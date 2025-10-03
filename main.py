@@ -26,18 +26,19 @@ def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFr
 
 
 if __name__ == "__main__":
-    file_name = "bier127.tsp"
-    # file_name = "burma14.tsp"
+    # file_name = "bier127.tsp"
+    file_name = "burma14.tsp"
 
     solver = TSPSolver(file_name)
     features = {
-        # 'method' : "christofides"
+        'method' : "christofides"
         # 'method' : "nearest_neighbor"
         # 'method': "chained_LK"
         # 'method' : "pyvrp_hgs"
-        'method' : "concord_wrapper"
+        # 'method' : "concord_wrapper"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)
     from pprint import pprint
     pprint(calculate_gap(file_name, route, df))
+    solver.Draw(route)

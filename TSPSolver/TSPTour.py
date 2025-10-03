@@ -76,7 +76,6 @@ class TSPTour:
                     improved = True
                     lsm.perform()
                     self._cost += lsm.gain
-                    break
         if improved:
             m = move(0, n - 1)
             iterations = np.random.randint(0, 10)
@@ -149,6 +148,15 @@ class TSPTour:
 
     def set_reach_time(self, time: float) -> None:
         setattr(self, '_reach_time', time)
+
+    def set_solution_methode(self, methode: str) -> None:
+        setattr(self, '_solution_methode', methode)
+
+    @property
+    def solution_methode(self) -> str:
+        if hasattr(self, '_solution_methode'):
+            return self._solution_methode
+        raise ValueError("no attribute defined with this name")
 
     @property
     def reach_time(self) -> float:

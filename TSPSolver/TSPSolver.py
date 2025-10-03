@@ -53,8 +53,6 @@ class TSPSolver:
                 return self._pyvrp_hgs(max_time)
             else:
                 return self._pyvrp_hgs()
-        else:
-            raise ValueError(f"Unknown solve method: {method}. Available: nearest_neighbor, christofides, chained_LK, concord_wrapper, pyvrp_hgs")
 
     def _nearest_neighbor(self, max_time: float = float("inf")) -> TSPTour:
         """ Nearest Neighbor heuristic for TSP """
@@ -77,6 +75,7 @@ class TSPSolver:
                     move(i, j).swap(sequence)
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
+        new_tour.set_solution_methode("Nearest Neighbor")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
 
@@ -102,6 +101,7 @@ class TSPSolver:
         sequence = np.array(christofides(graph), dtype=int)[:n]
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
+        new_tour.set_solution_methode("Christofides")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
 
@@ -117,6 +117,7 @@ class TSPSolver:
         best_tour = TSPTour(self._data)
         best_tour_time = time()
         best_tour.set_reach_time(best_tour_time - start_time)
+        best_tour.set_solution_methode("Chained LK")
         print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
         stagnation_allowed_time = int(max(100, 100 * np.log(self._data.stops_count)))  # ms
 
@@ -137,36 +138,10 @@ class TSPSolver:
                     best_tour = candidate
                     best_tour_time = time()
                     best_tour.set_reach_time(best_tour_time - start_time)
+                    best_tour.set_solution_methode("Chained LK")
                     print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
 
         return best_tour
-
-    # def _concord_wrapper(self, max_time: float = float("inf"), heuristic: bool = True) -> TSPTour:
-    #     if max_time <= 0:
-    #         raise ValueError("max_time must be positive or infinity")
-    #     from pytsp.tsp import TSPSolver as concord
-    #     start_time = time()
-    #     n = self._data.stops_count
-    #     if n > 10000:
-    #         raise ValueError("Concorde wrapper supports up to 10,000 stops due to memory constraints.")
-    #     print(f"File = {self._file_name}")
-    #     print(f"Stops Count = {n}")
-    #     print("Solution approach = Concord TSP TSPSolver")
-
-    #     if self._data.matrix is not None:
-    #         solver = concord.from_data(
-    #             n, self._data.matrix, norm="EXPLICIT", sym=True, heuristic=heuristic
-    #         )
-    #     else:
-    #         repo_root = Path(__file__).resolve().parent.parent
-    #         tsp_dir = repo_root / "TSPLIB"
-    #         selected_file = tsp_dir / self._file_name
-    #         solver = concord.from_tspfile(selected_file, heuristic=heuristic)
-    #     solution = solver.solve()
-    #     new_tour = TSPTour(self._data, np.array(solution.tour, dtype=int))
-    #     new_tour.set_reach_time(time() - start_time)
-    #     print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
-    #     return new_tour
 
     def _pyvrp_hgs(self, max_time: float = float("inf")) -> TSPTour:
         """Use pyvrp's Hybrid Genetic Search (HGS) to solve the TSP instance.
@@ -256,6 +231,7 @@ class TSPSolver:
         sequence = np.array(normalized, dtype=int)
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
+        new_tour.set_solution_methode("pyvrp HGS")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
 
@@ -344,8 +320,49 @@ class TSPSolver:
 
         new_tour = TSPTour(self._data, cycle)
         new_tour.set_reach_time(time() - start_time)
+        new_tour.set_solution_methode("Concorde via pyconcorde")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
 
     def __del__(self) -> None:
         del self._data
+
+    def Draw(self, tour: TSPTour) -> None:
+        """ Draw the tour using networkX, if the coordinates are available """
+        if self._data.stops_count > 20:
+            print("Drawing skipped: too many stops (>20) to visualize clearly.")
+            return
+        try:
+            coords = self._data.coordinates
+            try:
+                import matplotlib.pyplot as plt
+                import networkx as nx
+            except Exception as e:
+                raise ImportError(
+                    "matplotlib and networkx are required for the 'Draw' method. Install with "
+                    f"`pip install matplotlib networkx` or more info see https://matplotlib.org and https://networkx.org. "
+                    f"Original error: {e}"
+                )
+            if not coords:
+                raise ValueError("No coordinates available to draw the tour.")
+            if len(coords) != self._data.stops_count:
+                raise ValueError("Number of coordinates does not match number of stops.")
+            n = self._data.stops_count
+            graph = nx.DiGraph()
+            pos = {}
+            labels = {}
+            for i in range(n):
+                graph.add_node(i)
+                loc = coords[i]
+                px, py = loc.latitude, loc.longitude
+                pos[i] = (px, py)
+                labels[i] = str(i + 1)
+            seq = tour.sequence
+            for i in range(n):
+                graph.add_edge(seq[i], seq[(i + 1) % n])
+            plt.figure(figsize=(8, 8))
+            nx.draw(graph, pos, with_labels=True, labels=labels, node_size=300, node_color='lightblue', font_size=10, font_weight='bold', arrowsize=15)
+            plt.title(f"TSP Tour (cost = {tour.cost:.2f})")
+            plt.show()
+        except Exception as e:
+            raise RuntimeError(f"Error drawing TSP tour: {e}")
