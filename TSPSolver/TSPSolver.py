@@ -1,5 +1,6 @@
 from concurrent.futures import as_completed
 
+import math
 import numpy as np
 from pathlib import Path
 from TSPData.TSPInstance import TSPInstance
@@ -39,12 +40,12 @@ class TSPSolver:
                 return self._chained_LK(max_time)
             else:
                 return self._chained_LK()
-        # elif method == "concord_wrapper":
-        #     if "max_time" in kwargs:
-        #         max_time = kwargs.get("max_time")
-        #         return self._concord_wrapper(max_time)
-        #     else:
-        #         return self._concord_wrapper()
+        elif method == "concord_wrapper":
+            if "max_time" in kwargs:
+                max_time = kwargs.get("max_time")
+                return self._concord_wrapper(max_time)
+            else:
+                return self._concord_wrapper()
         elif method == "pyvrp_hgs":
             # Hybrid Genetic Search via pyvrp
             if "max_time" in kwargs:
@@ -52,6 +53,8 @@ class TSPSolver:
                 return self._pyvrp_hgs(max_time)
             else:
                 return self._pyvrp_hgs()
+        else:
+            raise ValueError(f"Unknown solve method: {method}. Available: nearest_neighbor, christofides, chained_LK, concord_wrapper, pyvrp_hgs")
 
     def _nearest_neighbor(self, max_time: float = float("inf")) -> TSPTour:
         """ Nearest Neighbor heuristic for TSP """
@@ -171,6 +174,8 @@ class TSPSolver:
         This method performs a lazy import of pyvrp and translates the current
         TSPInstance into pyvrp's expected format. If pyvrp is not installed,
         a clear ImportError is raised with installation instructions.
+        Install it with pip (this will also try to fetch/build VROOM):
+            pip install pyvrp or pip install "pyvrp @ git+https://github.com/VROOM-Project/pyvrp"
         """
         try:
             import pyvrp
@@ -250,6 +255,94 @@ class TSPSolver:
 
         sequence = np.array(normalized, dtype=int)
         new_tour = TSPTour(self._data, sequence)
+        new_tour.set_reach_time(time() - start_time)
+        print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
+        return new_tour
+
+    def _concord_wrapper(self, max_time: float = float("inf")) -> TSPTour:
+        """Run Concorde via the pyconcorde wrapper.
+
+        This function imports the `pyconcorde` package from the Python path.
+        If you cloned the `pyconcorde` repository locally (for example into
+        a sibling folder or into the project), Python will import that local
+        package automatically when running from the repository root.
+
+        Recommended ways to make the package available:
+        - Clone locally and install in editable/development mode (recommended
+          when you want to inspect or modify pyconcorde):
+
+            git clone https://github.com/jvkersch/pyconcorde.git /path/to/pyconcorde
+            pip install -e /path/to/pyconcorde
+
+        - Or install directly from GitHub (non-editable):
+
+            pip install "pyconcorde @ git+https://github.com/jvkersch/pyconcorde"
+
+        Note: building pyconcorde on native Windows may fail because the
+        package tries to build Concorde/QSopt; using WSL/Linux or a container
+        is the most reliable approach if you need the full Concorde binary.
+        """
+        if max_time <= 0:
+            raise ValueError("max_time must be positive or infinity")
+        try:
+            # Import pyconcorde (will pick up a local cloned package if present)
+            from pyconcorde.concorde.tsp import TSPSolver as ConcordeSolver
+            from pyconcorde.concorde.util import write_tsp_file
+        except Exception as e:
+            # Common failure: local source present but compiled Concorde extension
+            # (concorde._concorde) is missing on Windows. Detect that and fall
+            # back to the pyvrp_hgs solver so the script can continue.
+            msg = str(e)
+            if isinstance(e, ModuleNotFoundError) or "concorde" in msg:
+                print(
+                    "Warning: pyconcorde package was found but the compiled Concorde"
+                    " extension is missing (this is common on Windows). Falling back to"
+                    " 'pyvrp_hgs' solver. To use Concorde, install/build Concorde (or"
+                    " run in WSL/Linux) and install pyconcorde. Original error:\n",
+                    e,
+                )
+                try:
+                    return self._pyvrp_hgs(max_time)
+                except Exception:
+                    # If pyvrp fallback also fails, raise the original import error
+                    raise ImportError(
+                        "pyconcorde could not be imported and pyvrp fallback failed."
+                        f" Original import error: {e}"
+                    )
+            raise ImportError(
+                "pyconcorde could not be imported. If you cloned the project locally,"
+                " make sure it is on the Python path or installed in editable mode.\n"
+                f"Original import error: {e}"
+            )
+
+        start_time = time()
+        n = self._data.stops_count
+        if n > 10000:
+            raise ValueError("Concorde wrapper supports up to 10,000 stops due to memory constraints.")
+        print(f"File = {self._file_name}")
+        print(f"Stops Count = {n}")
+        print("Solution approach = Concord TSP (pyconcorde)")
+        
+        repo_root = Path(__file__).resolve().parent.parent
+        tsp_dir = repo_root / "TSPLIB"
+        selected_file = tsp_dir / self._file_name
+        if not selected_file.is_file():
+            raise FileNotFoundError(f"TSP file not found: {selected_file}")
+
+        # Construct solver directly from the TSPLIB file and pass heuristic/time bound
+        solver = ConcordeSolver.from_tspfile(str(selected_file))
+        time_bound = -1 if max_time == float('inf') else float(max_time)
+        comp = solver.solve(time_bound=time_bound, verbose=False, random_seed=0)
+
+        # comp.tour is a sequence of 1-based node indices
+        tour = np.array(comp.tour, dtype=int) - 1
+        # Ensure length matches n (Concorde sometimes omits final return if -1 marker)
+        if len(tour) == n + 1 and tour[-1] == -1:
+            tour = tour[:-1]
+        if len(tour) != n:
+            raise RuntimeError(f"Concorde returned tour of length {len(tour)} for n={n}")
+
+        new_tour = TSPTour(self._data, tour)
         new_tour.set_reach_time(time() - start_time)
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

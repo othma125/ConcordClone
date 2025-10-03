@@ -34,8 +34,8 @@ if __name__ == "__main__":
         # 'method' : "christofides"
         # 'method' : "nearest_neighbor"
         # 'method': "chained_LK"
-        'method' : "pyvrp_hgs"
-        # 'method' : "concord_wrapper"
+        # 'method' : "pyvrp_hgs"
+        'method' : "concord_wrapper"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)
