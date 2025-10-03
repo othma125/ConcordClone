@@ -334,15 +334,15 @@ class TSPSolver:
         time_bound = -1 if max_time == float('inf') else float(max_time)
         comp = solver.solve(time_bound=time_bound, verbose=False, random_seed=0)
 
-        # comp.tour is a sequence of 1-based node indices
-        tour = np.array(comp.tour, dtype=int) - 1
+        # comp.cycle is a sequence of 1-based node indices
+        cycle = np.array(comp.tour, dtype=int) - 1
         # Ensure length matches n (Concorde sometimes omits final return if -1 marker)
-        if len(tour) == n + 1 and tour[-1] == -1:
-            tour = tour[:-1]
-        if len(tour) != n:
-            raise RuntimeError(f"Concorde returned tour of length {len(tour)} for n={n}")
+        if len(cycle) == n + 1 and cycle[-1] == -1:
+            cycle = cycle[:-1]
+        if len(cycle) != n:
+            raise RuntimeError(f"Concorde returned cycle of length {len(cycle)} for n={n}")
 
-        new_tour = TSPTour(self._data, tour)
+        new_tour = TSPTour(self._data, cycle)
         new_tour.set_reach_time(time() - start_time)
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour
