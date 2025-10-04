@@ -1,28 +1,5 @@
 from TSPSolver.TSPSolver import TSPSolver
 from TSPSolver.TSPTour import TSPTour
-import pandas as pd
-
-df = pd.read_csv("TSPLIB//best_known_values.csv")
-
-
-def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFrame:
-    """Calculate the gap between the best known solution and the current solution"""
-    
-    instance_name = file_name.split('.')[0]
-    best_known_row = df[df['Instance'] == instance_name]
-    if best_known_row.empty:
-        raise ValueError(f"No best known solution found for instance: {instance_name}")
-    best_known_value = best_known_row['BestKnownValue'].values[0]
-    best_known_time = best_known_row['RunningTime'].values[0]
-    gap = (float(route.cost) - best_known_value) / best_known_value if best_known_value != 0 else 0
-    # Create a dictionary as result
-    result = {'file_name': file_name,
-              'best_known_value': float(best_known_value),
-              'best_known_time(s)': best_known_time,
-              'current_value': float(route.cost),
-              'current_time(s)': round(route.reach_time, 2),
-              'gap': f"{gap:.2%}"}
-    return result
 
 
 if __name__ == "__main__":
@@ -39,6 +16,4 @@ if __name__ == "__main__":
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)
-    from pprint import pprint
-    pprint(calculate_gap(file_name, route, df))
-    solver.Draw(route)
+    solver.Visualisation(route)

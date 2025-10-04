@@ -349,6 +349,24 @@ class TSPInstance:
         self._coordinates.clear()
         self._header.clear()
 
+    def _expected_explicit_count(self, fmt: str) -> int:
+        """Return the expected number of numeric entries for a given
+        EDGE_WEIGHT_FORMAT. Uses self.stops_count as n.
+        Supported formats: FULL_MATRIX, UPPER_ROW, LOWER_ROW,
+        UPPER_DIAG_ROW, LOWER_DIAG_ROW
+        """
+        n = self.stops_count
+        fmt = (fmt or "FULL_MATRIX").upper()
+        if fmt == "FULL_MATRIX":
+            return n * n
+        if fmt in ("UPPER_ROW", "LOWER_ROW"):
+            # strict upper/lower triangle without diagonal
+            return n * (n - 1) // 2
+        if fmt in ("UPPER_DIAG_ROW", "LOWER_DIAG_ROW"):
+            # triangle including diagonal
+            return n * (n + 1) // 2
+        raise ValueError(f"Unsupported EDGE_WEIGHT_FORMAT for explicit weights: {fmt}")
+
     def _ensure_open(self):
         if self._closed:
             raise RuntimeError(f"InputData instance already closed: {self._file_name}")

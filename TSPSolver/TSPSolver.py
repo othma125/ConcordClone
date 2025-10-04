@@ -1,14 +1,23 @@
 from concurrent.futures import as_completed
 
-import math
 import numpy as np
 from pathlib import Path
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from time import time
 
+methodes: dict = {
+    "nearest_neighbor": "_nearest_neighbor",
+    "christofides": "_christofides",
+    "chained_LK": "_chained_LK",
+    "concord_wrapper": "_concord_wrapper",
+    "pyvrp_hgs": "_pyvrp_hgs"
+}
 
 class TSPSolver:
+    """ Class to solve TSP instances using various heuristics and exact methods.
+    """
+
     def __init__(self, file_name: str):
         self._file_name = file_name
         repo_root = Path(__file__).resolve().parent.parent
@@ -19,40 +28,21 @@ class TSPSolver:
         self._data = TSPInstance(str(selected_file))
 
     def Solve(self, **kwargs) -> TSPTour:
-        method = kwargs.get("method", "chained_LK")
-        if method == "nearest_neighbor":
-            if "max_time" in kwargs:
-                max_time = kwargs.get("max_time")
-                return self._nearest_neighbor(max_time)
-            else:
-                return self._nearest_neighbor()
-        elif method == "christofides":
-            return self._christofides()
-        # elif method == "Simulated_Annealing":
-        #     if "max_time" in kwargs:
-        #         max_time = kwargs.get("max_time")
-        #         return self._Simulated_Annealing(max_time)
-        #     else:
-        #         return self._Simulated_Annealing()
-        elif method == "chained_LK":
-            if "max_time" in kwargs:
-                max_time = kwargs.get("max_time")
-                return self._chained_LK(max_time)
-            else:
-                return self._chained_LK()
-        elif method == "concord_wrapper":
-            if "max_time" in kwargs:
-                max_time = kwargs.get("max_time")
-                return self._concord_wrapper(max_time)
-            else:
-                return self._concord_wrapper()
-        elif method == "pyvrp_hgs":
-            # Hybrid Genetic Search via pyvrp
-            if "max_time" in kwargs:
-                max_time = kwargs.get("max_time")
-                return self._pyvrp_hgs(max_time)
-            else:
-                return self._pyvrp_hgs()
+        """ Solve the TSP instance using the specified method and parameters.
+        """
+        if 'method' not in kwargs or kwargs.get('method') not in methodes:
+            method = "christofides"
+        else:
+            method = kwargs.get('method')
+        if 'max_time' not in kwargs or not (isinstance(kwargs['max_time'], (int, float)) and (kwargs['max_time'] > 0 or kwargs['max_time'] == float("inf"))):
+            max_time = float("inf")
+        else:
+            max_time = float(kwargs['max_time'])
+        solve_method = getattr(self, methodes[method])
+        if 'max_time' in solve_method.__code__.co_varnames:
+            return solve_method(max_time=max_time)
+        else:
+            return solve_method()
 
     def _nearest_neighbor(self, max_time: float = float("inf")) -> TSPTour:
         """ Nearest Neighbor heuristic for TSP """
@@ -60,7 +50,7 @@ class TSPSolver:
             raise ValueError("max_time must be positive or infinity")
         from TSPSolver.Moves import move
         start_time = time()
-        print(f"File = {self._file_name}")
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {self._data.stops_count}")
         print("Solution approach = Nearest Neighbor")
         n = self._data.stops_count
@@ -90,7 +80,7 @@ class TSPSolver:
                 f"or more info see https://networkx.org. Original error: {e}"
             )
         start_time = time()
-        print(f"File = {self._file_name}")
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {self._data.stops_count}")
         print("Solution approach = Christofides")
         n = self._data.stops_count
@@ -112,6 +102,37 @@ class TSPSolver:
         from TSPSolver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
         start_time = time()
         print(f"File = {self._file_name}")
+        print(f"Stops Count = {self._data.stops_count}")
+        print("Solution approach = Chained Lin-Kernighan")
+        best_tour = TSPTour(self._data)
+        best_tour_time = time()
+        best_tour.set_reach_time(best_tour_time - start_time)
+        best_tour.set_solution_methode("Chained LK")
+        print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
+        stagnation_allowed_time = int(max(100, 100 * np.log(self._data.stops_count)))  # ms
+
+        def non_stop_condition(stag_ms: int, start_ms: float, best_ms: float) -> bool:
+            if max_time < float("inf"):
+                return time() - start_ms < max_time
+            current_time = time()
+            numerator = current_time - best_ms
+            denominator = max(1e-9, current_time - start_ms)
+            probability = numerator / denominator
+            return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
+
+        while non_stop_condition(stagnation_allowed_time, start_time, best_tour_time):
+            batch = [EXECUTOR.submit(best_tour.perturbation, self._data) for _ in range(AVAILABLE_PROCESSOR_CORES)]
+            for fut in as_completed(batch):
+                candidate = fut.result()
+                if candidate.cost < best_tour.cost:
+                    best_tour = candidate
+                    best_tour_time = time()
+                    best_tour.set_reach_time(best_tour_time - start_time)
+                    best_tour.set_solution_methode("Chained LK")
+                    print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
+        from TSPSolver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
+        start_time = time()
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {self._data.stops_count}")
         print("Solution approach = Chained Lin-Kernighan")
         best_tour = TSPTour(self._data)
@@ -162,7 +183,7 @@ class TSPSolver:
 
         start_time = time()
         n = self._data.stops_count
-        print(f"File = {self._file_name}")
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {n}")
         print("Solution approach = pyvrp HGS")
 
@@ -295,7 +316,7 @@ class TSPSolver:
         n = self._data.stops_count
         if n > 10000:
             raise ValueError("Concorde wrapper supports up to 10,000 stops due to memory constraints.")
-        print(f"File = {self._file_name}")
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {n}")
         print("Solution approach = Concord TSP (pyconcorde)")
         
@@ -327,7 +348,7 @@ class TSPSolver:
     def __del__(self) -> None:
         del self._data
 
-    def Draw(self, tour: TSPTour) -> None:
+    def Visualisation(self, tour: TSPTour) -> None:
         """ Draw the tour using networkX, if the coordinates are available """
         if self._data.stops_count > 20:
             print("Drawing skipped: too many stops (>20) to visualize clearly.")
