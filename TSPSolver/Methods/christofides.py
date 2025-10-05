@@ -4,7 +4,7 @@ from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time
 
 
-class ChristofidesSolver(TSPSolver):
+class Christofides(TSPSolver):
     def __init__(self, data: TSPInstance):
         super().__init__(data)
 
@@ -30,6 +30,6 @@ class ChristofidesSolver(TSPSolver):
         sequence = __import__('numpy').array(christofides(graph), dtype=int)[:n]
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
-        new_tour.set_solution_methode("Christofides")
+        new_tour.set_method("Christofides")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

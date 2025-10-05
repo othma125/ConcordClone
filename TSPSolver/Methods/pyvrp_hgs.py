@@ -5,7 +5,7 @@ from time import time
 import numpy as _np
 
 
-class PyvrpHGSSolver(TSPSolver):
+class pyVRPHGS(TSPSolver):
     def __init__(self, data: TSPInstance):
         super().__init__(data)
 
@@ -91,6 +91,6 @@ class PyvrpHGSSolver(TSPSolver):
         sequence = _np.array(normalized, dtype=int)
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
-        new_tour.set_solution_methode("pyvrp HGS")
+        new_tour.set_method("pyvrp HGS")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

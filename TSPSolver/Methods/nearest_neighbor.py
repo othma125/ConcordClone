@@ -5,7 +5,7 @@ from time import time
 from TSPSolver.Moves import move
 
 
-class NearestNeighborSolver(TSPSolver):
+class NearestNeighbor(TSPSolver):
     """Adapter that subclasses TSPSolver and delegates to run_nearest_neighbor."""
 
     def __init__(self, data: TSPInstance):
@@ -34,6 +34,6 @@ class NearestNeighborSolver(TSPSolver):
                     move(i, j).swap(sequence)
         new_tour = TSPTour(self._data, sequence)
         new_tour.set_reach_time(time() - start_time)
-        new_tour.set_solution_methode("Nearest Neighbor")
+        new_tour.set_method("Nearest Neighbor")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

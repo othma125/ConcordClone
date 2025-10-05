@@ -149,13 +149,13 @@ class TSPTour:
     def set_reach_time(self, time: float) -> None:
         setattr(self, '_reach_time', time)
 
-    def set_solution_methode(self, methode: str) -> None:
-        setattr(self, '_solution_methode', methode)
+    def set_method(self, method: str) -> None:
+        setattr(self, '_method', method)
 
     @property
-    def solution_methode(self) -> str:
-        if hasattr(self, '_solution_methode'):
-            return self._solution_methode
+    def method(self) -> str:
+        if hasattr(self, '_method'):
+            return self._method
         raise ValueError("no attribute defined with this name")
 
     @property

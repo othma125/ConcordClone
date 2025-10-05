@@ -1,15 +1,15 @@
-from .nearest_neighbor import NearestNeighborSolver
-from .christofides import ChristofidesSolver
-from .chained_LK import ChainedLKSolver
-from .concord_wrapper import ConcordeWrapperSolver
-from .pyvrp_hgs import PyvrpHGSSolver
+from .nearest_neighbor import NearestNeighbor
+from .christofides import Christofides
+from .chained_LK import ChainedLK
+from .concord_wrapper import ConcordeWrapper
+from .pyvrp_hgs import pyVRPHGS
 
 registry = {
-    "nearest_neighbor": NearestNeighborSolver,
-    "christofides": ChristofidesSolver,
-    "chained_LK": ChainedLKSolver,
-    "concord_wrapper": ConcordeWrapperSolver,
-    "pyvrp_hgs": PyvrpHGSSolver,
+    "nearest_neighbor": NearestNeighbor,
+    "christofides": Christofides,
+    "chained_LK": ChainedLK,
+    "concord_wrapper": ConcordeWrapper,
+    "pyvrp_hgs": pyVRPHGS,
 }
 
 __all__ = ["registry"]

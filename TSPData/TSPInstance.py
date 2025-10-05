@@ -25,8 +25,7 @@ class TSPInstance:
         self._closed = False
         self._lock = threading.RLock()
 
-        with (
-        open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
+        with (open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
             early_exit = self._parse_tsplib(fh, max_dimension)
             if early_exit:
                 return
@@ -47,7 +46,7 @@ class TSPInstance:
         if hasattr(self, '_coordinates'):
             return self._coordinates
         raise ValueError("no attribute defined with this name")
-    
+
     @property
     def file_name(self) -> str:
         if hasattr(self, '_file_name'):

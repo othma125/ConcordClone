@@ -5,7 +5,7 @@ import numpy as np
 from pathlib import Path
 
 
-class ConcordeWrapperSolver(TSPSolver):
+class ConcordeWrapper(TSPSolver):
     def __init__(self, file_name: str):
         super().__init__(file_name)
 
@@ -47,8 +47,8 @@ class ConcordeWrapperSolver(TSPSolver):
                     " run in WSL/Linux) and install pyconcorde. Original error:\n",
                     e,
                 )
-                from TSPSolver.Methods.pyvrp_hgs import PyvrpHGSSolver
-                return PyvrpHGSSolver(self._data).solve()
+                from TSPSolver.Methods.pyvrp_hgs import pyVRPHGS
+                return pyVRPHGS(self._data).solve()
             raise ImportError(
                 "pyconcorde could not be imported. If you cloned the project locally,"
                 " make sure it is on the Python path or installed in editable mode.\n"
@@ -81,6 +81,6 @@ class ConcordeWrapperSolver(TSPSolver):
 
         new_tour = TSPTour(self._data, cycle)
         new_tour.set_reach_time(time() - start_time)
-        new_tour.set_solution_methode("Concorde via pyconcorde")
+        new_tour.set_method("Concorde via pyconcorde")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

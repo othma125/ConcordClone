@@ -2,16 +2,12 @@ import math
 
 
 class Location:
-    ''' Represents a geographical location with latitude and longitude. '''
+    """ Represents a geographical location with latitude and longitude. """
     def __init__(self, latitude: float, longitude: float):
-        ''' Initializes a Location object with latitude and longitude. '''
+        """ Initializes a Location object with latitude and longitude. """
         self._latitude = latitude
         self._longitude = longitude
 
-    @property
-    def latitude(self) -> float:
-        return self._latitude
-    
     @property
     def latitude(self) -> float:
         return self._latitude

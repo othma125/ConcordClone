@@ -6,7 +6,7 @@ from concurrent.futures import as_completed
 import numpy as np
 
 
-class ChainedLKSolver(TSPSolver):
+class ChainedLK(TSPSolver):
     def __init__(self, data: TSPInstance):
         super().__init__(data)
 
@@ -16,13 +16,13 @@ class ChainedLKSolver(TSPSolver):
             raise ValueError("max_time must be positive or infinity")
         from TSPSolver import EXECUTOR, AVAILABLE_PROCESSOR_CORES
         start_time = time()
-        print(f"File = {self._file_name}")
+        print(f"File = {self._file_name.split('\\')[-1]}")
         print(f"Stops Count = {self._data.stops_count}")
         print("Solution approach = Chained Lin-Kernighan")
         best_tour = TSPTour(self._data)
         best_tour_time = time()
         best_tour.set_reach_time(best_tour_time - start_time)
-        best_tour.set_solution_methode("Chained LK")
+        best_tour.set_method("Chained LK")
         print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
         stagnation_allowed_time = int(max(100, 100 * np.log(self._data.stops_count)))  # ms
 
@@ -43,7 +43,7 @@ class ChainedLKSolver(TSPSolver):
                     best_tour = candidate
                     best_tour_time = time()
                     best_tour.set_reach_time(best_tour_time - start_time)
-                    best_tour.set_solution_methode("Chained LK")
+                    best_tour.set_method("Chained LK")
                     print(f"New best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
 
         return best_tour
