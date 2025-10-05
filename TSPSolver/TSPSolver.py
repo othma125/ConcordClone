@@ -21,7 +21,7 @@ class TSPSolver:
     def __init__(self, file_name: str):
         self._file_name = file_name
         repo_root = Path(__file__).resolve().parent.parent
-        tsp_dir = repo_root / "TSPLIB"
+        tsp_dir = repo_root / "DefaultInstances" / "TSPLIB"
         selected_file = tsp_dir / file_name
         if not selected_file.is_file():
             raise FileNotFoundError(f"TSP file not found: {selected_file}")
@@ -190,8 +190,9 @@ class TSPSolver:
         # Build explicit matrix from get_cost (integer distances)
         matrix = np.zeros((n, n), dtype=np.int64)
         for i in range(n):
-            for j in range(n):
+            for j in range(i + 1, n):
                 matrix[i, j] = int(self._data.get_cost(i, j))
+                matrix[j, i] = matrix[i, j]
 
         # For pyvrp ProblemData: create 1 depot and n-1 clients (locations = depots + clients)
         depots = [pyvrp.Depot(x=0, y=0)]
@@ -199,7 +200,7 @@ class TSPSolver:
         clients = [pyvrp.Client(x=0, y=0, delivery=[0], pickup=[0]) for _ in range(max(0, n - 1))]
 
         vehicle_types = [
-            pyvrp.VehicleType(num_available=1, capacity=[sum([0] * n) + 1], start_depot=0, end_depot=0)
+            pyvrp.VehicleType(num_available=1, capacity=[1], start_depot=0, end_depot=0)
         ]
 
         pdata = pyvrp.ProblemData(

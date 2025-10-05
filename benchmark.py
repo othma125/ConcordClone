@@ -3,7 +3,7 @@ from TSPSolver.TSPSolver import TSPSolver
 from TSPSolver.TSPTour import TSPTour
 import pandas as pd
 
-df = pd.read_csv("TSPLIB//best_known_values.csv")
+df = pd.read_csv("DefaultInstances//TSPLIB//best_known_values.csv")
 
 
 def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFrame:
@@ -29,12 +29,12 @@ def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFr
 
 
 if __name__ == "__main__":
-    max_dimension = 30
+    max_dimension = 14
     # loop over all .tsp files in the TSPLIB folder and store it in a list
     from pathlib import Path
     # benchmark.py sits at the repository root, so use its parent as repo_root
     repo_root = Path(__file__).resolve().parent
-    tsp_dir = repo_root / "TSPLIB"
+    tsp_dir = repo_root / "DefaultInstances" / "TSPLIB"
     # glob('*.tsp') already restricts to .tsp files; use the Path objects
     # and pass a string path to TSPInstance to avoid Path-related issues.
     files = {file: TSPInstance(str(file)).stops_count for file in tsp_dir.glob("*.tsp")}
@@ -57,6 +57,16 @@ if __name__ == "__main__":
             print("Result: ")
             pprint(result)
             print()
-    keys = 'file_name,stops_count,best_known_value,best_known_time(s),method_name,method_value,method_time(s),gap'.split(',')
+    columns = 'file_name,stops_count,best_known_value,best_known_time(s),method_name,method_value,method_time(s),gap'.split(',')
     output_file = repo_root / f"benchmark_results_up_to_{max_dimension}_stops.csv"
-    pd.DataFrame(results)[keys].to_csv(output_file, index=False)
+    # Build DataFrame from results. If empty, create an empty DataFrame with
+    # the desired columns so the CSV still contains headers.
+    df_out = pd.DataFrame(results)
+    if df_out.empty:
+        df_out = pd.DataFrame(columns=columns)
+    else:
+        # Reorder/add missing columns to match our desired schema
+        df_out = df_out.reindex(columns=columns)
+
+    df_out.to_csv(output_file, index=False)
+    print(f"Wrote benchmark results to: {output_file} ({len(df_out)} rows)")
