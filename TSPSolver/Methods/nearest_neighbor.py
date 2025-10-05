@@ -1,5 +1,6 @@
+from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.TSPSolver import TSPSolver
+from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time
 from TSPSolver.Moves import move
 
@@ -7,8 +8,8 @@ from TSPSolver.Moves import move
 class NearestNeighborSolver(TSPSolver):
     """Adapter that subclasses TSPSolver and delegates to run_nearest_neighbor."""
 
-    def __init__(self, file_name: str):
-        super().__init__(file_name)
+    def __init__(self, data: TSPInstance):
+        super().__init__(data)
 
     def solve(self, max_time: float = float("inf")) -> TSPTour:
         """Nearest Neighbor heuristic implementation.

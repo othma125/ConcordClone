@@ -1,11 +1,12 @@
+from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.TSPSolver import TSPSolver
+from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time
 
 
 class ChristofidesSolver(TSPSolver):
-    def __init__(self, file_name: str):
-        super().__init__(file_name)
+    def __init__(self, data: TSPInstance):
+        super().__init__(data)
 
     def solve(self, max_time: float = float("inf")) -> TSPTour:
         """ Christofides heuristic for TSP using NetworkX """

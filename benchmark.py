@@ -1,5 +1,5 @@
 from TSPData.TSPInstance import TSPInstance
-from TSPSolver.TSPSolver import TSPSolver
+from TSPSolver.Methods.TSPSolver import TSPSolver
 from TSPSolver.TSPTour import TSPTour
 import pandas as pd
 
@@ -29,7 +29,7 @@ def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFr
 
 
 if __name__ == "__main__":
-    max_dimension = 30
+    max_dimension = 14
     # loop over all .tsp files in the TSPLIB folder and store it in a list
     from pathlib import Path
     # benchmark.py sits at the repository root, so use its parent as repo_root
@@ -46,7 +46,8 @@ if __name__ == "__main__":
     results = []
     for file, dim in files_list:
         # print(f"Solving {file.name} with {dim} stops")
-        solver = TSPSolver(file.name)
+        data = TSPInstance(str(file))
+        solver = TSPSolver(data)
         for method in registry.keys():
             features = {
                 'method': method,

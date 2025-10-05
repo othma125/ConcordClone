@@ -47,6 +47,12 @@ class TSPInstance:
         if hasattr(self, '_coordinates'):
             return self._coordinates
         raise ValueError("no attribute defined with this name")
+    
+    @property
+    def file_name(self) -> str:
+        if hasattr(self, '_file_name'):
+            return self._file_name
+        raise ValueError("no attribute defined with this name")
 
     def _parse_tsplib(self, fh: TextIO, max_dimension: int) -> bool:
         section = None

@@ -1,8 +1,5 @@
-import numpy as np
-from pathlib import Path
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from time import time
 
 
 MAX_STOPS = 20  # Maximum number of stops to visualize clearly
@@ -14,14 +11,9 @@ class TSPSolver:
     registry. This class keeps instance loading and visualization.
     """
 
-    def __init__(self, file_name: str):
-        self._file_name = file_name
-        repo_root = Path(__file__).resolve().parent.parent
-        tsp_dir = repo_root / "DefaultInstances" / "TSPLIB"
-        selected_file = tsp_dir / file_name
-        if not selected_file.is_file():
-            raise FileNotFoundError(f"TSP file not found: {selected_file}")
-        self._data = TSPInstance(str(selected_file))
+    def __init__(self, data: TSPInstance):
+        self._data = data
+        self._file_name = self._data.file_name
 
     def Solve(self, **kwargs) -> TSPTour:
         """Dispatch to the requested solver from TSPSolver.methods.registry.
@@ -41,7 +33,7 @@ class TSPSolver:
             max_time = float('inf')
 
         SolverClass = registry[method]
-        solver_instance = SolverClass(self._file_name)
+        solver_instance = SolverClass(self._data)
         # All solver adapters use solve(max_time)
         return solver_instance.solve(max_time)
 

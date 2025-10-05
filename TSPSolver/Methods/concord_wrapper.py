@@ -1,5 +1,5 @@
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.TSPSolver import TSPSolver
+from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time
 import numpy as np
 from pathlib import Path
@@ -48,7 +48,7 @@ class ConcordeWrapperSolver(TSPSolver):
                     e,
                 )
                 from TSPSolver.Methods.pyvrp_hgs import PyvrpHGSSolver
-                return PyvrpHGSSolver(self._file_name).solve()
+                return PyvrpHGSSolver(self._data).solve()
             raise ImportError(
                 "pyconcorde could not be imported. If you cloned the project locally,"
                 " make sure it is on the Python path or installed in editable mode.\n"
