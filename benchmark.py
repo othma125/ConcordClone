@@ -29,7 +29,7 @@ def calculate_gap(file_name: str, route: TSPTour, df: pd.DataFrame) -> pd.DataFr
 
 
 if __name__ == "__main__":
-    max_dimension = 14
+    max_dimension = 30
     # loop over all .tsp files in the TSPLIB folder and store it in a list
     from pathlib import Path
     # benchmark.py sits at the repository root, so use its parent as repo_root
@@ -41,13 +41,13 @@ if __name__ == "__main__":
     files = {file: dim for file, dim in files.items() if dim <= max_dimension}
     # sort the files by the number of stops and produce (file, dim) tuples
     files_list = sorted(files.items(), key=lambda kv: kv[1])
-    from TSPSolver.TSPSolver import methodes
+    from TSPSolver.Methods import registry
     from pprint import pprint
     results = []
     for file, dim in files_list:
         # print(f"Solving {file.name} with {dim} stops")
-        solver = TSPSolver(str(file))
-        for method in methodes.keys():
+        solver = TSPSolver(file.name)
+        for method in registry.keys():
             features = {
                 'method': method,
                 'max_time': 10}  # seconds

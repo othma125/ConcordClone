@@ -25,7 +25,8 @@ class TSPInstance:
         self._closed = False
         self._lock = threading.RLock()
 
-        with (open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
+        with (
+        open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
             early_exit = self._parse_tsplib(fh, max_dimension)
             if early_exit:
                 return
@@ -34,12 +35,13 @@ class TSPInstance:
 
         if not self.use_matrix and self._cost_map is None:
             self._cost_map = {}
+
     @property
     def matrix(self) -> Optional[np.ndarray]:
         if not self.use_matrix:
             return None
         return self._cost_matrix
-    
+
     @property
     def coordinates(self) -> List[Location]:
         if hasattr(self, '_coordinates'):
