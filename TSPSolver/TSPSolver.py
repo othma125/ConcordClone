@@ -14,6 +14,8 @@ methodes: dict = {
     "pyvrp_hgs": "_pyvrp_hgs"
 }
 
+MAX_STOPS = 20  # Maximum number of stops to visualize clearly
+
 class TSPSolver:
     """ Class to solve TSP instances using various heuristics and exact methods.
     """
@@ -352,33 +354,32 @@ class TSPSolver:
     def Visualisation(self, tour: TSPTour) -> None:
         """ Draw the tour using networkX, if the coordinates are available """
         if self._data.stops_count > 20:
-            print("Drawing skipped: too many stops (>20) to visualize clearly.")
+            print(f"Drawing skipped: too many stops (>{MAX_STOPS}) to visualize clearly.")
             return
         try:
-            coords = self._data.coordinates
             try:
                 import matplotlib.pyplot as plt
                 import networkx as nx
-            except Exception as e:
-                raise ImportError(
+            except ImportError as e:
+                print(
                     "matplotlib and networkx are required for the 'Draw' method. Install with "
                     f"`pip install matplotlib networkx` or more info see https://matplotlib.org and https://networkx.org. "
                     f"Original error: {e}"
                 )
-            if not coords:
-                raise ValueError("No coordinates available to draw the tour.")
-            if len(coords) != self._data.stops_count:
-                raise ValueError("Number of coordinates does not match number of stops.")
+                return
             n = self._data.stops_count
             graph = nx.DiGraph()
             pos = {}
             labels = {}
-            for i in range(n):
-                graph.add_node(i)
-                loc = coords[i]
-                px, py = loc.latitude, loc.longitude
-                pos[i] = (px, py)
-                labels[i] = str(i + 1)
+            try:
+                for i in range(n):
+                    graph.add_node(i)
+                    loc = self._data.coordinates[i]
+                    px, py = loc.latitude, loc.longitude
+                    pos[i] = (px, py)
+                    labels[i] = str(i + 1)
+            except ValueError as e:
+                return
             seq = tour.sequence
             for i in range(n):
                 graph.add_edge(seq[i], seq[(i + 1) % n])
