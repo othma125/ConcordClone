@@ -9,10 +9,10 @@ if __name__ == "__main__":
     solver = TSPSolver(file_name)
     features = {
         # 'method' : "christofides"
-        # 'method' : "nearest_neighbor"
+        'method' : "nearest_neighbor"
         # 'method': "chained_LK"
         # 'method' : "pyvrp_hgs"
-        'method' : "concord_wrapper"
+        # 'method' : "concord_wrapper"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)

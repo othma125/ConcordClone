@@ -81,16 +81,7 @@ class TSPSolver:
             for i in range(n):
                 graph.add_node(i)
                 loc = self._data.coordinates[i]
-                # Support multiple coordinate representations
-                if hasattr(loc, 'latitude') and hasattr(loc, 'longitude'):
-                    px, py = loc.latitude, loc.longitude
-                elif hasattr(loc, 'x') and hasattr(loc, 'y'):
-                    px, py = loc.x, loc.y
-                elif isinstance(loc, (list, tuple)) and len(loc) >= 2:
-                    px, py = loc[0], loc[1]
-                else:
-                    print("Unsupported coordinate format for visualization. Skipping drawing.")
-                    return
+                px, py = loc.latitude, loc.longitude
                 pos[i] = (px, py)
                 labels[i] = str(i + 1)
         except Exception as e:
