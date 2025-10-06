@@ -14,11 +14,12 @@ if __name__ == "__main__":
     data = TSPInstance(selected_file)
     solver = TSPSolver(data)
     features = {
-        'method' : "christofides"
+        # 'method' : "christofides"
         # 'method' : "nearest_neighbor"
         # 'method': "chained_LK"
         # 'method' : "pyvrp_hgs"
         # 'method' : "concord_wrapper"
+        'method': "simulated_annealing"
         , 'max_time': 10}  # seconds
     route = solver.Solve(**features)
     print(route)

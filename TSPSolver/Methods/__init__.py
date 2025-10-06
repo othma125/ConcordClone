@@ -3,6 +3,7 @@ from .christofides import Christofides
 from .chained_LK import ChainedLK
 from .concord_wrapper import ConcordeWrapper
 from .pyvrp_hgs import pyVRPHGS
+from .simulated_annealing import SimulatedAnnealing
 
 registry = {
     "nearest_neighbor": NearestNeighbor,
@@ -10,6 +11,7 @@ registry = {
     "chained_LK": ChainedLK,
     "concord_wrapper": ConcordeWrapper,
     "pyvrp_hgs": pyVRPHGS,
+    "simulated_annealing": SimulatedAnnealing,
 }
 
 __all__ = ["registry"]
