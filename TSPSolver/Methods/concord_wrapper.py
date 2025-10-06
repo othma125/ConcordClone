@@ -1,3 +1,8 @@
+"""
+ConcordeWrapper is a TSPSolver subclass that uses the pyconcorde package to solve TSP instances.
+It attempts to import and use the Concorde solver via pyconcorde, falling back to a different solver
+if Concorde is unavailable. The wrapper expects TSPLIB-format files and supports up to 10,000 stops.
+"""
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time

@@ -1,3 +1,27 @@
+
+"""
+pyVRPHGS is a TSP solver that leverages the Hybrid Genetic Search (HGS) algorithm from the pyvrp library to solve Traveling Salesman Problem (TSP) instances.
+Classes:
+    pyVRPHGS(TSPSolver): 
+        A solver class that inherits from TSPSolver and uses pyvrp's HGS to find TSP solutions.
+Methods:
+    __init__(self, data: TSPInstance):
+        Initializes the pyVRPHGS solver with a given TSPInstance.
+    solve(self, max_time: float = float("inf")) -> TSPTour:
+        Solves the TSP instance using pyvrp's Hybrid Genetic Search (HGS) algorithm.
+        Args:
+            max_time (float, optional): Maximum runtime in seconds for the solver. Defaults to infinity.
+        Returns:
+            TSPTour: The best tour found by the solver.
+        Raises:
+            ImportError: If pyvrp is not installed, with installation instructions.
+            RuntimeError: If no routes are returned or if the route cannot be normalized to a TSP permutation.
+        Notes:
+            - Performs a lazy import of pyvrp to avoid unnecessary dependency if not used.
+            - Converts the TSPInstance data into the format expected by pyvrp.
+            - Handles various route normalization cases to ensure compatibility with TSPTour.
+            - Prints progress and solution information to the console.
+"""
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver

@@ -1,6 +1,33 @@
-from TSPData.TSPInstance import TSPInstance
+"""
+TSPSolver: Lightweight orchestrator for solving Traveling Salesman Problem (TSP) instances.
+Classes:
+    TSPSolver:
+        Orchestrates the loading, solving, and visualization of TSP instances.
+        Delegates actual solving to methods registered in TSPSolver.Methods.registry.
+Attributes:
+    MAX_STOPS (int): Maximum number of stops to visualize clearly.
+Methods:
+    __init__(self, data: TSPInstance):
+        Initializes the TSPSolver with a TSPInstance.
+    Solve(self, **kwargs) -> TSPTour:
+        Dispatches to the requested TSP solver method from the registry.
+        Args:
+            method (str): Name of the solver (registry key); defaults to 'christofides'.
+            max_time (float): Optional maximum time in seconds for the solver (default: infinity).
+        Returns:
+            TSPTour: The resulting tour from the solver.
+    __del__(self) -> None:
+        Destructor to clean up the TSPInstance data.
+    Visualisation(self, tour: TSPTour) -> None:
+        Draws the TSP tour using networkX and matplotlib if coordinates are available and the number of stops is within MAX_STOPS.
+        Args:
+            tour (TSPTour): The tour to visualize.
+        Notes:
+            - Skips drawing if the tour is invalid or the number of stops exceeds MAX_STOPS.
+            - Requires matplotlib and networkx for visualization.
+"""
 from TSPSolver.TSPTour import TSPTour
-
+from TSPData.TSPInstance import TSPInstance
 
 MAX_STOPS = 20  # Maximum number of stops to visualize clearly
 

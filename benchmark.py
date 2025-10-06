@@ -38,7 +38,7 @@ if __name__ == "__main__":
     tsp_dir = repo_root / "DefaultInstances" / "TSPLIB"
     # glob('*.tsp') already restricts to .tsp files; use the Path objects
     # and pass a string path to TSPInstance to avoid Path-related issues.
-    files = {file: TSPInstance(str(file)).stops_count for file in tsp_dir.glob("*.tsp")}
+    files = {file: TSPInstance(str(file), max_dimension).stops_count for file in tsp_dir.glob("*.tsp")}
     files = {file: dim for file, dim in files.items() if dim <= max_dimension}
     # sort the files by the number of stops and produce (file, dim) tuples
     files_list = sorted(files.items(), key=lambda kv: kv[1])
@@ -46,13 +46,12 @@ if __name__ == "__main__":
     from pprint import pprint
 
     results = []
-    for file, dim in files_list:
+    for file in files_list:
         # print(f"Solving {file.name} with {dim} stops")
         data = TSPInstance(str(file))
         solver = TSPSolver(data)
         for method in registry.keys():
-            features = {'method': method, 'max_time': 10}  # seconds
-            route = solver.Solve(**features)
+            route = solver.Solve(method=method, max_time=10)  #max_time in seconds
             result = calculate_gap(file.name, route, df)
             if any(data.stops_count == res['stops_count'] and route.method == res['method_name'] and route.cost <= res['method_value'] for res in results):
                 continue

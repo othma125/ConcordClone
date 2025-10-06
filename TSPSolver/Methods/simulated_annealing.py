@@ -1,3 +1,26 @@
+"""
+SimulatedAnnealing class implements the Simulated Annealing heuristic for solving the Traveling Salesman Problem (TSP).
+Classes:
+    SimulatedAnnealing(TSPSolver): Inherits from TSPSolver and provides a solve method using simulated annealing.
+Methods:
+    __init__(self, data: TSPInstance):
+        Initializes the SimulatedAnnealing solver with a TSPInstance.
+    solve(self, max_time: float = float("inf")) -> TSPTour:
+        Solves the TSP using the Simulated Annealing heuristic.
+        Args:
+            max_time (float, optional): Maximum allowed time (in seconds) for the algorithm to run. 
+                                        Defaults to infinity (no time limit).
+        Returns:
+            TSPTour: The best tour found by the simulated annealing process.
+        Raises:
+            ValueError: If max_time is not positive or infinity.
+        Algorithm Details:
+            - Initializes with a random tour and sets simulated annealing parameters (initial temperature, cooling rate).
+            - Iteratively perturbs the current best tour in parallel using available processor cores.
+            - Accepts new tours based on cost improvement or probabilistically according to the annealing schedule.
+            - Updates the best tour and logs progress when a new best is found.
+            - Continues until the stopping condition is met (based on stagnation or max_time).
+"""
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver

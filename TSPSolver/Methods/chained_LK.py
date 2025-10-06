@@ -1,3 +1,24 @@
+"""
+ChainedLK implements the Chained Lin-Kernighan heuristic for solving the Traveling Salesman Problem (TSP).
+Classes:
+    ChainedLK(TSPSolver): Inherits from TSPSolver and applies the Chained Lin-Kernighan heuristic.
+Methods:
+    __init__(self, data: TSPInstance):
+        Initializes the ChainedLK solver with a TSPInstance.
+    solve(self, max_time: float = float("inf")) -> TSPTour:
+        Runs the Chained Lin-Kernighan heuristic to find a near-optimal TSP tour.
+        Args:
+            max_time (float, optional): Maximum allowed computation time in seconds. Defaults to infinity.
+        Returns:
+            TSPTour: The best tour found within the allowed time.
+        Raises:
+            ValueError: If max_time is not positive or infinity.
+        Details:
+            - Prints information about the problem instance and solution progress.
+            - Uses parallel processing to perform multiple perturbations of the current best tour.
+            - Updates the best tour when a better candidate is found.
+            - Stops when the allowed stagnation time is exceeded or the maximum time is reached.
+"""
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver

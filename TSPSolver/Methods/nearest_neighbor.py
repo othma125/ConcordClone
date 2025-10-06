@@ -1,3 +1,8 @@
+"""
+Implements the Nearest Neighbor heuristic for the Traveling Salesman Problem (TSP).
+This module defines the NearestNeighbor class, which extends TSPSolver and provides
+a solve method using the Nearest Neighbor approach to construct a TSP tour.
+"""
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver

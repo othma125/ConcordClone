@@ -1,3 +1,15 @@
+"""
+Christofides TSP Solver using NetworkX
+This class implements the Christofides heuristic for the Traveling Salesman Problem (TSP).
+It constructs a complete weighted graph from the TSP instance, applies the Christofides algorithm,
+and returns a TSPTour object with the resulting tour.
+
+Raises:
+    ImportError: If the required NetworkX library is not installed.
+
+Returns:
+    TSPTour: The tour found by the Christofides algorithm.
+"""
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
 from TSPSolver.Methods.TSPSolver import TSPSolver

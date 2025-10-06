@@ -13,24 +13,78 @@ class TSPInstance:
     DEFAULT_MATRIX_THRESHOLD = 150
     MATRIX_ENV = "TSP_MATRIX_MAX"
 
-    def __init__(self, path: str, max_dimension: int = float('inf')):
-        self._file_name = path if isinstance(path, str) else getattr(path, "name", "UNKNOWN")
+    def __init__(self, path: str = None, matrix: Optional[np.ndarray] = None,
+                 coordinates: Optional[List[tuple]] = None,
+                 max_dimension: int = float('inf')):
+        """Create a TSPInstance.
+
+        Priority for input sources:
+          1. path (TSPLIB file)
+          2. coordinates (list of (x,y) tuples or Location objects)
+          3. matrix (numpy square distance matrix)
+
+        If `matrix` is provided it will set `use_matrix=True` by default.
+        Otherwise the instance decides whether to store a dense matrix
+        depending on the number of stops and heuristics.
+        """
         self._header: Dict[str, str] = {}
         self._coordinates: List[Location] = []  # type: ignore
         self.stops_count: int = 0
         self.use_matrix: bool = False
         self.explicit_weights: bool = False
-        self._cost_matrix: Optional[np.ndarray] = None  # CHANGED
+        self._cost_matrix: Optional[np.ndarray] = None
         self._cost_map: Optional[Dict[Edge, float]] = None  # type: ignore
         self._closed = False
         self._lock = threading.RLock()
 
-        with (open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
-            early_exit = self._parse_tsplib(fh, max_dimension)
-            if early_exit:
-                return
-            if self.use_matrix and self.stops_count > 0:
+        # Path case: parse TSPLIB file (keeps old behaviour)
+        if path is not None:
+            self._file_name = path if isinstance(path, str) else getattr(path, "name", "UNKNOWN")
+            with (open(path, "r", encoding="utf-8", errors="ignore") if isinstance(path, (str, os.PathLike)) else path) as fh:
+                early_exit = self._parse_tsplib(fh, max_dimension)
+                if early_exit:
+                    return
+                if self.use_matrix and self.stops_count > 0:
+                    self._allocate_matrix()
+
+        # Coordinates case (only used if path was not provided)
+        elif coordinates is not None:
+            self._file_name = "None"
+            # Normalize coordinates into Location objects
+            coords = list(coordinates)
+            self.stops_count = len(coords)
+            if self.stops_count > max_dimension:
+                raise ValueError("Provided coordinates exceed max_dimension")
+            for c in coords:
+                if isinstance(c, Location):
+                    self._coordinates.append(c)
+                else:
+                    # expect (x,y) tuple/list
+                    x, y = c
+                    self._coordinates.append(Location(float(x), float(y)))
+            # decide storage strategy
+            self.use_matrix = self._decide_matrix_strategy()
+            if self.use_matrix:
                 self._allocate_matrix()
+
+        # Matrix case (fallback if neither path nor coordinates given)
+        elif matrix is not None:
+            self._file_name = "None"
+            arr = np.asarray(matrix, dtype=float)
+            if arr.ndim != 2 or arr.shape[0] != arr.shape[1]:
+                raise ValueError("matrix must be a square 2D numpy array")
+            self.stops_count = arr.shape[0]
+            if self.stops_count > max_dimension:
+                raise ValueError("Provided matrix exceeds max_dimension")
+            # use matrix explicitly
+            self.use_matrix = True
+            self.explicit_weights = True
+            self._cost_matrix = arr.copy()
+            # no coordinates available
+            self._coordinates = []
+
+        else:
+            raise ValueError("TSPInstance requires one of: path, coordinates, or matrix")
 
         if not self.use_matrix and self._cost_map is None:
             self._cost_map = {}
