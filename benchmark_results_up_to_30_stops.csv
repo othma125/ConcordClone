@@ -1,0 +1,46 @@
+file_name,stops_count,best_known_value,best_known_time(s),method_name,method_value,method_time(s),gap
+burma14.tsp,14,3323.0,0.06,Nearest Neighbor,4017.0,0.02,20.88%
+burma14.tsp,14,3323.0,0.06,Christofides,3606.0,0.01,8.52%
+burma14.tsp,14,3323.0,0.06,Chained LK,3323.0,0.01,0.00%
+burma14.tsp,14,3323.0,0.06,pyvrp HGS,3323.0,0.08,0.00%
+burma14.tsp,14,3323.0,0.06,Simulated Annealing,3323.0,0.09,0.00%
+ulysses16.tsp,16,6859.0,0.22,Nearest Neighbor,10067.0,0.01,46.77%
+ulysses16.tsp,16,6859.0,0.22,Christofides,6983.0,0.01,1.81%
+ulysses16.tsp,16,6859.0,0.22,Chained LK,6859.0,0.25,0.00%
+ulysses16.tsp,16,6859.0,0.22,pyvrp HGS,6859.0,0.11,0.00%
+ulysses16.tsp,16,6859.0,0.22,Simulated Annealing,6859.0,0.17,0.00%
+gr17.tsp,17,2085.0,0.08,Nearest Neighbor,2179.0,0.0,4.51%
+gr17.tsp,17,2085.0,0.08,Christofides,2197.0,0.0,5.37%
+gr17.tsp,17,2085.0,0.08,Chained LK,2085.0,1.53,0.00%
+gr17.tsp,17,2085.0,0.08,pyvrp HGS,2085.0,0.15,0.00%
+gr17.tsp,17,2085.0,0.08,Simulated Annealing,2085.0,0.48,0.00%
+gr21.tsp,21,2707.0,0.03,Nearest Neighbor,3253.0,0.0,20.17%
+gr21.tsp,21,2707.0,0.03,Christofides,3092.0,0.0,14.22%
+gr21.tsp,21,2707.0,0.03,Chained LK,2707.0,0.18,0.00%
+gr21.tsp,21,2707.0,0.03,pyvrp HGS,2707.0,0.19,0.00%
+gr21.tsp,21,2707.0,0.03,Simulated Annealing,2707.0,0.6,0.00%
+ulysses22.tsp,22,7013.0,0.53,Nearest Neighbor,10586.0,0.0,50.95%
+ulysses22.tsp,22,7013.0,0.53,Christofides,7411.0,0.01,5.68%
+ulysses22.tsp,22,7013.0,0.53,Chained LK,7013.0,0.22,0.00%
+ulysses22.tsp,22,7013.0,0.53,pyvrp HGS,7013.0,0.16,0.00%
+ulysses22.tsp,22,7013.0,0.53,Simulated Annealing,7013.0,0.18,0.00%
+gr24.tsp,24,1272.0,0.07,Nearest Neighbor,1725.0,0.01,35.61%
+gr24.tsp,24,1272.0,0.07,Christofides,1455.0,0.01,14.39%
+gr24.tsp,24,1272.0,0.07,Chained LK,1272.0,0.09,0.00%
+gr24.tsp,24,1272.0,0.07,pyvrp HGS,1272.0,0.16,0.00%
+gr24.tsp,24,1272.0,0.07,Simulated Annealing,1272.0,0.11,0.00%
+fri26.tsp,26,937.0,0.07,Nearest Neighbor,948.0,0.0,1.17%
+fri26.tsp,26,937.0,0.07,Christofides,1043.0,0.01,11.31%
+fri26.tsp,26,937.0,0.07,Chained LK,937.0,0.02,0.00%
+fri26.tsp,26,937.0,0.07,pyvrp HGS,937.0,0.13,0.00%
+fri26.tsp,26,937.0,0.07,Simulated Annealing,937.0,0.31,0.00%
+bayg29.tsp,29,1610.0,0.09,Nearest Neighbor,2012.0,0.01,24.97%
+bayg29.tsp,29,1610.0,0.09,Christofides,1716.0,0.01,6.58%
+bayg29.tsp,29,1610.0,0.09,Chained LK,1622.0,6.34,0.75%
+bayg29.tsp,29,1610.0,0.09,pyvrp HGS,1610.0,0.18,0.00%
+bayg29.tsp,29,1610.0,0.09,Simulated Annealing,1615.0,1.53,0.31%
+bays29.tsp,29,2020.0,0.13,Nearest Neighbor,2755.0,0.0,36.39%
+bays29.tsp,29,2020.0,0.13,Christofides,2155.0,0.01,6.68%
+bays29.tsp,29,2020.0,0.13,Chained LK,2020.0,0.1,0.00%
+bays29.tsp,29,2020.0,0.13,pyvrp HGS,2020.0,0.2,0.00%
+bays29.tsp,29,2020.0,0.13,Simulated Annealing,2020.0,1.36,0.00%

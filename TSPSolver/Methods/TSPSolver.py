@@ -106,12 +106,18 @@ class TSPSolver:
         except Exception as e:
             print(f"Error preparing coordinates for drawing: {e}")
             return
-
         seq = tour.sequence
         for i in range(n):
             graph.add_edge(seq[i], seq[(i + 1) % n])
         plt.figure(figsize=(8, 8))
         nx.draw(graph, pos, with_labels=True, labels=labels, node_size=300, node_color='lightblue', font_size=10,
                 font_weight='bold', arrowsize=15)
-        plt.title(f"TSP Tour (cost = {tour.cost:.2f})")
+        plt.title(f"TSP Tour: {self._file_name} , cost = {tour.cost:.2f}, method = {tour.method}")
+        # Set the window title if possible (matplotlib >= 3.4)
+        try:
+            fig = plt.gcf()
+            if hasattr(fig.canvas.manager, 'set_window_title'):
+                fig.canvas.manager.set_window_title(f"TSP Tour: {self._file_name} , cost = {tour.cost:.2f}, method = {tour.method}")
+        except Exception as e:
+            print(f"Could not set window title: {e}")
         plt.show()

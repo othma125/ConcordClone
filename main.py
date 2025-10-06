@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # data = TSPInstance(selected_file)
 
     ## 2) Example: construct from coordinates (small square)
-    coords = [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+    coords = [(0.10, 0.0), (1.50, 0.0), (1.30, 1.0), (0.0, 1.0)]
     data = TSPInstance(coordinates=coords)
 
     ## 3) Example: construct from explicit distance matrix
