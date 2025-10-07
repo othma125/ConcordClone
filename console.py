@@ -12,6 +12,8 @@ import shlex
 from pathlib import Path
 from typing import Optional, List
 
+from TSPSolver.TSPTour import TSPTour
+
 # try to enable an input function that supports command history
 # Prefer system readline (POSIX), then prompt_toolkit (cross-platform). Fall back to builtin input.
 readline = None
@@ -38,7 +40,7 @@ REPO_ROOT = Path(__file__).resolve().parent
 TSPLIB_DIR = REPO_ROOT / 'DefaultInstances' / 'TSPLIB'
 
 
-def solve_command(file_name: str, method: Optional[str] = None, max_time: Optional[float] = None):
+def solve_command(file_name: str, method: Optional[str] = None, max_time: Optional[float] = None) -> None:
     """Solve a TSP file. method and max_time are optional and will use solver defaults when None.
 
     Returns the tour object or None on failure.
@@ -62,47 +64,44 @@ def solve_command(file_name: str, method: Optional[str] = None, max_time: Option
     print(f"Solving {file_name} with method={method or '(default)'} max_time={max_time if max_time is not None else '(default)'}")
     data = TSPInstance(str(tsp_path))
     solver = TSPSolver(data)
-    try:
-        kwargs = {}
-        if method is not None:
-            kwargs['method'] = method
-        if max_time is not None:
-            kwargs['max_time'] = max_time
-        tour = solver.Solve(**kwargs)
-    except Exception as e:
-        # Helpful fallback: if a required library is missing (networkx/matplotlib),
-        # try a different solver (pyvrp_hgs) if available.
-        err = str(e)
-        print(f"Solver error: {e}")
-        registry = None
-        try:
-            from TSPSolver.Methods import registry as _registry
-            registry = _registry
-        except Exception:
-            registry = None
+    # try:
+    kwargs = {}
+    if method is not None:
+        kwargs['method'] = method
+    if max_time is not None:
+        kwargs['max_time'] = max_time
+    tour = solver.Solve(**kwargs)
+    # except Exception as e:
+    #     # Helpful fallback: if a required library is missing (networkx/matplotlib),
+    #     # try a different solver (pyvrp_hgs) if available.
+    #     err = str(e)
+    #     print(f"Solver error: {e}")
+    #     registry = None
+    #     try:
+    #         from TSPSolver.Methods import registry as _registry
+    #         registry = _registry
+    #     except Exception:
+    #         registry = None
 
-        if (isinstance(e, ImportError) or 'networkx' in err.lower() or 'matplotlib' in err.lower()) and registry is not None:
-            if 'pyvrp_hgs' in registry and (method is None or method != 'pyvrp_hgs'):
-                print("Attempting fallback solver 'pyvrp_hgs' because of missing optional dependency...")
-                try:
-                    kwargs['method'] = 'pyvrp_hgs'
-                    tour = solver.Solve(**kwargs)
-                    print("Fallback to 'pyvrp_hgs' succeeded.")
-                    LAST_SOLVED['file'] = file_name
-                    LAST_SOLVED['method'] = 'pyvrp_hgs'
-                    LAST_SOLVED['tour'] = tour
-                    print(tour)
-                    return tour
-                except Exception as e2:
-                    print(f"Fallback solver also failed: {e2}")
-        return None
-
-    LAST_SOLVED['file'] = file_name
-    LAST_SOLVED['method'] = method
+    #     if (isinstance(e, ImportError) or 'networkx' in err.lower() or 'matplotlib' in err.lower()) and registry is not None:
+    #         if 'pyvrp_hgs' in registry and (method is None or method != 'pyvrp_hgs'):
+    #             print("Attempting fallback solver 'pyvrp_hgs' because of missing optional dependency...")
+    #             try:
+    #                 kwargs['method'] = 'pyvrp_hgs'
+    #                 tour = solver.Solve(**kwargs)
+    #                 print("Fallback to 'pyvrp_hgs' succeeded.")
+    #                 LAST_SOLVED['tour'] = tour
+    #                 LAST_SOLVED['solver'] = solver
+    #                 print(tour)
+    #                 return tour
+    #             except Exception as e2:
+    #                 print(f"Fallback solver also failed: {e2}")
+    #     return
+    
     LAST_SOLVED['tour'] = tour
+    LAST_SOLVED['solver'] = solver
     print(tour)
-    return tour
-
+    
 
 def plot_command(args: List[str]):
     """Plot last tour or solve+plot with optional args.
@@ -118,15 +117,7 @@ def plot_command(args: List[str]):
         if 'tour' not in LAST_SOLVED:
             print('No previously solved tour to plot.')
             return
-        from TSPSolver.TSPSolver import TSPSolver
-        from TSPData.TSPInstance import TSPInstance
-        file_name = LAST_SOLVED['file']
-        tsp_path = resolve_tsp_path(file_name)
-        if tsp_path is None:
-            print(f"Previously solved file missing: {file_name}")
-            return
-        data = TSPInstance(str(tsp_path))
-        solver = TSPSolver(data)
+        solver = LAST_SOLVED.get('solver')
         solver.Visualisation(LAST_SOLVED['tour'])
         return
 
@@ -139,17 +130,9 @@ def plot_command(args: List[str]):
     method = args[1] if len(args) >= 2 else None
     max_time = float(args[2]) if len(args) == 3 else None
 
-    tour = solve_command(file_name, method, max_time)
-    if tour is not None:
-        from TSPSolver.TSPSolver import TSPSolver
-        from TSPData.TSPInstance import TSPInstance
-        tsp_path = resolve_tsp_path(file_name)
-        if tsp_path is None:
-            print(f"TSP file missing after solve: {file_name}")
-            return
-        data = TSPInstance(str(tsp_path))
-        solver = TSPSolver(data)
-        solver.Visualisation(tour)
+    solve_command(file_name, method, max_time)
+    solver = LAST_SOLVED.get('solver')
+    solver.Visualisation(LAST_SOLVED['tour'])
 
 
 def resolve_tsp_path(file_name: str) -> Optional[Path]:

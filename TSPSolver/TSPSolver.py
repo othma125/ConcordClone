@@ -28,8 +28,14 @@ Methods:
 """
 from TSPSolver.TSPTour import TSPTour
 from TSPData.TSPInstance import TSPInstance
-
-MAX_STOPS = 20  # Maximum number of stops to visualize clearly
+# read max stops from .env if available
+try:
+    from dotenv import load_dotenv
+    from os import getenv
+    load_dotenv()
+    MAX_STOPS = int(getenv('MAX_STOPS', '20'))
+except Exception:
+    MAX_STOPS = 20  # Maximum number of stops to visualize clearly
 
 
 class TSPSolver:
@@ -75,7 +81,7 @@ class TSPSolver:
             return
 
         if self._data.stops_count > MAX_STOPS:
-            print(f"Drawing skipped: too many stops (>{MAX_STOPS}) to visualize clearly.")
+            print(f"Drawing skipped: too many stops (> {MAX_STOPS}) to visualize clearly.")
             return
 
         try:
@@ -114,7 +120,7 @@ class TSPSolver:
         try:
             fig = plt.gcf()
             if hasattr(fig.canvas.manager, 'set_window_title'):
-                fig.canvas.manager.set_window_title(f"TSP Tour: {self._file_name} , cost = {tour.cost:.2f}, method = {tour.method}")
+                fig.canvas.manager.set_window_title(f"TSP Tour: {self._file_name.split('\\')[-1]} , cost = {tour.cost:.2f}, method = {tour.method}")
         except Exception as e:
             print(f"Could not set window title: {e}")
         plt.show()
