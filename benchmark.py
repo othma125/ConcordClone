@@ -1,5 +1,5 @@
 from TSPData.TSPInstance import TSPInstance
-from TSPSolver.Methods.TSPSolver import TSPSolver
+from TSPSolver.TSPSolver import TSPSolver
 from TSPSolver.TSPTour import TSPTour
 import pandas as pd
 
@@ -38,17 +38,18 @@ if __name__ == "__main__":
     tsp_dir = repo_root / "DefaultInstances" / "TSPLIB"
     # glob('*.tsp') already restricts to .tsp files; use the Path objects
     # and pass a string path to TSPInstance to avoid Path-related issues.
-    files = {file: TSPInstance(str(file), max_dimension).stops_count for file in tsp_dir.glob("*.tsp")}
-    files = {file: dim for file, dim in files.items() if dim <= max_dimension}
-    # sort the files by the number of stops and produce (file, dim) tuples
+    # build a mapping Path -> stops_count (pass max_dimension as keyword to avoid positional confusion)
+    files = {f: TSPInstance(str(f), max_dimension=max_dimension).stops_count for f in tsp_dir.glob("*.tsp")}
+    files = {f: dim for f, dim in files.items() if dim <= max_dimension}
+    # sort the files by the number of stops and produce (file_path, dim) tuples
     files_list = sorted(files.items(), key=lambda kv: kv[1])
     from TSPSolver.Methods import registry
     from pprint import pprint
 
     results = []
-    for file in files_list:
+    for file, dim in files_list:
         # print(f"Solving {file.name} with {dim} stops")
-        data = TSPInstance(str(file))
+        data = TSPInstance(str(file), max_dimension=max_dimension)
         solver = TSPSolver(data)
         for method in registry.keys():
             route = solver.Solve(method=method, max_time=10)  #max_time in seconds

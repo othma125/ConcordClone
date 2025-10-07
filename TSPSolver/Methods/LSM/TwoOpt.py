@@ -1,4 +1,4 @@
-from TSPSolver.Moves import move
+from TSPSolver.Methods.LSM.Moves import move
 from TSPData.TSPInstance import TSPInstance
 from .LocalSearchMoves import LocalSearchMove
 

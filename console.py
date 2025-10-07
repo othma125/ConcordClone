@@ -44,7 +44,8 @@ def solve_command(file_name: str, method: Optional[str] = None, max_time: Option
     Returns the tour object or None on failure.
     """
     # import lazily to avoid circular imports at module import time
-    from TSPSolver.Methods.TSPSolver import TSPSolver
+    global kwargs
+    from TSPSolver.TSPSolver import TSPSolver
     from TSPData.TSPInstance import TSPInstance
     from TSPSolver.Methods import registry
 
@@ -117,7 +118,7 @@ def plot_command(args: List[str]):
         if 'tour' not in LAST_SOLVED:
             print('No previously solved tour to plot.')
             return
-        from TSPSolver.Methods.TSPSolver import TSPSolver
+        from TSPSolver.TSPSolver import TSPSolver
         from TSPData.TSPInstance import TSPInstance
         file_name = LAST_SOLVED['file']
         tsp_path = resolve_tsp_path(file_name)
@@ -140,7 +141,7 @@ def plot_command(args: List[str]):
 
     tour = solve_command(file_name, method, max_time)
     if tour is not None:
-        from TSPSolver.Methods.TSPSolver import TSPSolver
+        from TSPSolver.TSPSolver import TSPSolver
         from TSPData.TSPInstance import TSPInstance
         tsp_path = resolve_tsp_path(file_name)
         if tsp_path is None:

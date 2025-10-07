@@ -19,9 +19,11 @@ Methods:
             - Updates the best tour when a better candidate is found.
             - Stops when the allowed stagnation time is exceeded or the maximum time is reached.
 """
+from typing import override
+
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.Methods.TSPSolver import TSPSolver
+from TSPSolver.TSPSolver import TSPSolver
 from time import time
 from concurrent.futures import as_completed
 import numpy as np

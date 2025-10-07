@@ -23,7 +23,7 @@ Methods:
 """
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.Methods.TSPSolver import TSPSolver
+from TSPSolver.TSPSolver import TSPSolver
 from time import time
 from concurrent.futures import as_completed
 import numpy as np

@@ -24,7 +24,7 @@ Methods:
 """
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.Methods.TSPSolver import TSPSolver
+from TSPSolver.TSPSolver import TSPSolver
 from time import time
 import numpy as _np
 

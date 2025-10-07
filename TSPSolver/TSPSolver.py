@@ -54,10 +54,7 @@ class TSPSolver:
         method = kwargs.get('method', 'christofides')
         if method not in registry:
             method = 'christofides'
-        try:
-            max_time = float(kwargs.get('max_time', float('inf')))
-        except Exception:
-            max_time = float('inf')
+        max_time = float(kwargs.get('max_time', float('inf')))
 
         SolverClass = registry[method]
         solver_instance = SolverClass(self._data)
@@ -77,7 +74,7 @@ class TSPSolver:
             print("Provided object is not a TSPTour (missing attributes). Skipping drawing.")
             return
 
-        if self._data.stops_count > 20:
+        if self._data.stops_count > MAX_STOPS:
             print(f"Drawing skipped: too many stops (>{MAX_STOPS}) to visualize clearly.")
             return
 
@@ -112,7 +109,7 @@ class TSPSolver:
         plt.figure(figsize=(8, 8))
         nx.draw(graph, pos, with_labels=True, labels=labels, node_size=300, node_color='lightblue', font_size=10,
                 font_weight='bold', arrowsize=15)
-        plt.title(f"TSP Tour: {self._file_name} , cost = {tour.cost:.2f}, method = {tour.method}")
+        plt.title(f"TSP Tour: {self._file_name.split('\\')[-1]} , cost = {tour.cost:.2f}, method = {tour.method}")
         # Set the window title if possible (matplotlib >= 3.4)
         try:
             fig = plt.gcf()

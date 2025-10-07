@@ -1,10 +1,5 @@
-"""
-ConcordeWrapper is a TSPSolver subclass that uses the pyconcorde package to solve TSP instances.
-It attempts to import and use the Concorde solver via pyconcorde, falling back to a different solver
-if Concorde is unavailable. The wrapper expects TSPLIB-format files and supports up to 10,000 stops.
-"""
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.Methods.TSPSolver import TSPSolver
+from TSPSolver.TSPSolver import TSPSolver
 from time import time
 import numpy as np
 from pathlib import Path
@@ -19,7 +14,8 @@ class ConcordeWrapper(TSPSolver):
 
         This function imports the `pyconcorde` package from the Python path.
         If you cloned the `pyconcorde` repository locally (for example into
-        a sibling folder or into the project), Python will import that local
+        a sibling fol
+        @overrideder or intrun projcal
         package automatically when running from the repository root.
 
         Recommended ways to make the package available:
@@ -86,6 +82,6 @@ class ConcordeWrapper(TSPSolver):
 
         new_tour = TSPTour(self._data, cycle)
         new_tour.set_reach_time(time() - start_time)
-        new_tour.set_method("Concorde via pyconcorde")
+        new_tour.set_solution_methode("Concorde via pyconcorde")
         print(f"New best cost = {new_tour.cost:.2f} at {int(new_tour.reach_time * 1000)} ms")
         return new_tour

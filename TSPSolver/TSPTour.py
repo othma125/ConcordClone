@@ -2,11 +2,6 @@ import math
 import numpy as np
 
 from TSPData.TSPInstance import TSPInstance
-from TSPSolver.LSM.TwoOpt import two_opt_move
-from TSPSolver.LSM.LeftShift import left_shift_move
-from TSPSolver.LSM.RightShift import right_shift_move
-from TSPSolver.LSM.Swap import swap_move
-from TSPSolver.Moves import move  # rename file if needed (current file name is Swap.py)
 
 
 class TSPTour:
@@ -63,6 +58,13 @@ class TSPTour:
         Iteratively apply 2_opt moves to improve the tour cost
         Stops when no stagnation is reached, then stagnation breaker is applied with some probability
         """
+        # import moves lazily to avoid circular imports with Methods registry
+        from TSPSolver.Methods.LSM.TwoOpt import two_opt_move
+        from TSPSolver.Methods.LSM.LeftShift import left_shift_move
+        from TSPSolver.Methods.LSM.RightShift import right_shift_move
+        from TSPSolver.Methods.LSM.Swap import swap_move
+        from TSPSolver.Methods.LSM.Moves import move
+
         n = len(self._sequence)
         if n < 2:
             return
@@ -87,6 +89,11 @@ class TSPTour:
 
     def _stagnation_breaker(self, data: TSPInstance) -> bool:
         """ Try to find any improving move to escape stagnation."""
+        # import moves lazily to avoid circular imports
+        from TSPSolver.Methods.LSM.LeftShift import left_shift_move
+        from TSPSolver.Methods.LSM.RightShift import right_shift_move
+        from TSPSolver.Methods.LSM.Swap import swap_move
+
         n = len(self._sequence)
         for i in range(0, n - 1):
             for j in range(i + 1, n):

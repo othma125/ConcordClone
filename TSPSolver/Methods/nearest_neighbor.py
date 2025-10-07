@@ -5,16 +5,22 @@ a solve method using the Nearest Neighbor approach to construct a TSP tour.
 """
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
-from TSPSolver.Methods.TSPSolver import TSPSolver
 from time import time
-from TSPSolver.Moves import move
+from TSPSolver.Methods.LSM.Moves import move
 
 
-class NearestNeighbor(TSPSolver):
-    """Adapter that subclasses TSPSolver and delegates to run_nearest_neighbor."""
+class NearestNeighbor:
+    """Nearest Neighbor adapter that accepts a TSPInstance and exposes solve(max_time).
+
+    This intentionally does NOT subclass TSPSolver to avoid circular imports at module
+    import time. The registry expects a callable/class with signature (data) -> instance
+    that has a `solve(max_time)` method.
+    """
 
     def __init__(self, data: TSPInstance):
-        super().__init__(data)
+        # store internal data like TSPSolver would provide
+        self._data = data
+        self._file_name = getattr(data, 'file_name', 'UNKNOWN')
 
     def solve(self, max_time: float = float("inf")) -> TSPTour:
         """Nearest Neighbor heuristic implementation.
