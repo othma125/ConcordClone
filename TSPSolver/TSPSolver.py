@@ -67,9 +67,6 @@ class TSPSolver:
         # All solver adapters use solve(max_time)
         return solver_instance.solve(max_time)
 
-    def __del__(self) -> None:
-        del self._data
-
     def Visualisation(self, tour: TSPTour) -> None:
         """ Draw the tour using networkX, if the coordinates are available """
         # Defensive checks: ensure we have a valid tour object

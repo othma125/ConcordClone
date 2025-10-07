@@ -6,6 +6,7 @@ if __name__ == "__main__":
     # file_name = "bier127.tsp"
     file_name = "burma14.tsp"
     from pyparsing import Path
+
     repo_root = Path(__file__).resolve().parent
     selected_file = repo_root / "DefaultInstances" / "TSPLIB" / file_name
     if not selected_file.is_file():
