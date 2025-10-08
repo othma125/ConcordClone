@@ -54,7 +54,7 @@ if __name__ == "__main__":
         for method in registry.keys():
             route = solver.Solve(method=method, max_time=10)  #max_time in seconds
             result = calculate_gap(file.name, route, df)
-            if any(data.stops_count == res['stops_count'] and route.method == res['method_name'] and route.cost <= res['method_value'] for res in results):
+            if any(data.file_name == res['file_name'] and route.method == res['method_name'] and route.cost <= res['method_value'] for res in results):
                 continue
             results.append(result)
             print("Result: ")
