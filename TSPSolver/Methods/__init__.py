@@ -4,6 +4,7 @@ from .chained_LK import ChainedLK
 from .concord_wrapper import ConcordeWrapper
 from .pyvrp_hgs import pyVRPHGS
 from .simulated_annealing import SimulatedAnnealing
+# from .concord_clone import ConcordClone
 
 registry = {
     "nearest_neighbor": NearestNeighbor,
@@ -12,6 +13,7 @@ registry = {
     "concord_wrapper": ConcordeWrapper,
     "pyvrp_hgs": pyVRPHGS,
     "simulated_annealing": SimulatedAnnealing,
+    # "concord_clone": ConcordClone,
 }
 
 __all__ = ["registry"]

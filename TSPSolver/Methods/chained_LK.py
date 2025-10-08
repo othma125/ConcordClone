@@ -19,7 +19,6 @@ Methods:
             - Updates the best tour when a better candidate is found.
             - Stops when the allowed stagnation time is exceeded or the maximum time is reached.
 """
-from typing import override
 
 from TSPData.TSPInstance import TSPInstance
 from TSPSolver.TSPTour import TSPTour
@@ -50,15 +49,13 @@ class ChainedLK(TSPSolver):
         stagnation_allowed_time = int(max(100, 100 * np.log(self._data.stops_count)))  # ms
 
         def non_stop_condition(stag_ms: int, start_ms: float, best_ms: float) -> bool:
-            if max_time < float("inf"):
-                return time() - start_ms < max_time
             current_time = time()
             numerator = current_time - best_ms
             denominator = max(1e-9, current_time - start_ms)
             probability = numerator / denominator
             return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
 
-        while non_stop_condition(stagnation_allowed_time, start_time, best_tour_time):
+        while time() - start_time < max_time and non_stop_condition(stagnation_allowed_time, start_time, best_tour_time):
             batch = [EXECUTOR.submit(best_tour.perturbation, self._data) for _ in range(AVAILABLE_PROCESSOR_CORES)]
             for fut in as_completed(batch):
                 candidate = fut.result()

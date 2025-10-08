@@ -18,21 +18,6 @@ from TSPSolver.TSPTour import TSPTour
 # Prefer system readline (POSIX), then prompt_toolkit (cross-platform). Fall back to builtin input.
 readline = None
 input_func = input
-try:
-    import readline  # POSIX
-    # readline integrates with built-in input() on POSIX; we can just use input()
-    input_func = input
-except Exception:
-    try:
-        # prompt_toolkit provides a nice cross-platform prompt with history support
-        from prompt_toolkit import PromptSession
-        from prompt_toolkit.history import InMemoryHistory
-
-        _session = PromptSession(history=InMemoryHistory())
-        input_func = _session.prompt
-    except Exception:
-        # last resort: plain input (no arrow history)
-        input_func = input
 
 LAST_SOLVED = {}
 

@@ -28,14 +28,11 @@ Methods:
 """
 from TSPSolver.TSPTour import TSPTour
 from TSPData.TSPInstance import TSPInstance
-# read max stops from .env if available
-try:
-    from dotenv import load_dotenv
-    from os import getenv
-    load_dotenv()
-    MAX_STOPS = int(getenv('MAX_STOPS', '20'))
-except Exception:
-    MAX_STOPS = 20  # Maximum number of stops to visualize clearly
+# read max stops from .env file
+from dotenv import load_dotenv
+from os import getenv
+load_dotenv()
+MAX_STOPS = int(getenv('MAX_STOPS', '20'))
 
 
 class TSPSolver:
@@ -80,17 +77,9 @@ class TSPSolver:
         if self._data.stops_count > MAX_STOPS:
             print(f"Drawing skipped: too many stops (> {MAX_STOPS}) to visualize clearly.")
             return
-
-        try:
-            import matplotlib.pyplot as plt
-            import networkx as nx
-        except ImportError as e:
-            print(
-                "matplotlib and networkx are required for the 'Draw' method. Install with "
-                f"`pip install matplotlib networkx` or more info see https://matplotlib.org and https://networkx.org. "
-                f"Original error: {e}"
-            )
-            return
+        
+        import matplotlib.pyplot as plt
+        import networkx as nx
 
         n = self._data.stops_count
         graph = nx.DiGraph()

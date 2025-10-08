@@ -18,8 +18,8 @@ if __name__ == "__main__":
     # data = TSPInstance(coordinates=coords)
 
     ## 3) Example: construct from explicit distance matrix
-    # import numpy as np
-    # m = np.array([[0,1,2],[1,0,1],[2,1,0]], dtype=float)
+    # from numpy import array, float
+    # m = array([[0,1,2],[1,0,1],[2,1,0]], dtype=float)
     # data = TSPInstance(matrix=m)
 
     solver = TSPSolver(data)

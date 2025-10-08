@@ -53,15 +53,13 @@ class SimulatedAnnealing(TSPSolver):
         print(f"Initial best cost = {best_tour.cost:.2f} at {int(best_tour.reach_time * 1000)} ms")
 
         def non_stop_condition(stag_ms: int, start_ms: float, best_ms: float) -> bool:
-            if max_time < float("inf"):
-                return time() - start_ms < max_time
             current_time = time()
             numerator = current_time - best_ms
             denominator = max(1e-9, current_time - start_ms)
             probability = numerator / denominator
             return (current_time - best_ms) < (stag_ms / 1000) or np.random.random() > probability
-        
-        while non_stop_condition(1000, start_time, best_tour_time):
+
+        while time() - start_time < max_time and non_stop_condition(1000, start_time, best_tour_time):
             batch = [EXECUTOR.submit(best_tour.perturbation, self._data) for _ in range(AVAILABLE_PROCESSOR_CORES)]
             for fut in as_completed(batch):
                 candidate = fut.result()
