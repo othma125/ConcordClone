@@ -2,6 +2,8 @@ from TSPSolver.TSPSolver import TSPSolver
 from TSPData.TSPInstance import TSPInstance
 
 if __name__ == "__main__":
+    # This is a simple comment to test the git pull (#1)
+    
     ## 1) Example: read from TSPLIB file (uncomment to test with a local file)
     # file_name = "bier127.tsp"
     file_name = "burma14.tsp"
